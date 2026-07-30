@@ -1,4 +1,4 @@
-import { PrismaPg } from "@prisma/adapter-pg";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "@/generated/prisma/client";
 
 // Next's dev server re-evaluates modules on every edit, and a serverless
@@ -32,15 +32,23 @@ function createClient() {
     );
   }
 
-  const adapter = new PrismaPg({
-    connectionString,
-    // Every warm serverless instance holds its own pool, so these stay small
-    // and the provider's own pooler handles fan-in. A large max here would
-    // exhaust the database's connection limit as soon as traffic scales out.
-    max: 3,
-    idleTimeoutMillis: 10_000,
-    connectionTimeoutMillis: 10_000,
-  });
+  // Neon's own driver rather than plain node-postgres, for two reasons.
+  //
+  // It talks to Neon over WebSockets on port 443 instead of the Postgres wire
+  // protocol on 5432. Plenty of networks — including mobile and consumer ISPs
+  // in Uzbekistan — complete the TCP handshake on 5432 and then silently drop
+  // the payload, which surfaces as a connection that hangs until it times out
+  // rather than as a clean refusal. Port 443 looks like ordinary HTTPS and is
+  // not treated that way.
+  //
+  // It is also the better fit for serverless: no TCP pool to keep warm between
+  // invocations, and nothing to exhaust the database's connection limit when
+  // the platform scales instances out.
+  //
+  // `PrismaNeon` (WebSocket) rather than `PrismaNeonHttp`, because the HTTP
+  // variant cannot do transactions — and the admin decision flow writes a
+  // status change and its audit event together.
+  const adapter = new PrismaNeon({ connectionString });
 
   return new PrismaClient({
     adapter,

@@ -23,6 +23,29 @@ Postgres connection too**, since a Prisma client is generated for one provider
 only. Neon's free tier includes database branching, which is the tidy way to do
 this — one branch for production, one for local.
 
+## Why the Neon driver, not plain node-postgres
+
+`src/lib/db.ts` uses `@prisma/adapter-neon`, which reaches the database over
+WebSockets on port **443**, rather than `@prisma/adapter-pg`, which uses the
+Postgres wire protocol on port **5432**.
+
+Two reasons, and the first was found the hard way. On the network this was
+developed on, a TCP connection to Neon on 5432 completes its handshake and then
+receives no protocol reply at all — the connection simply hangs until it times
+out. Port 443 to the same host completes a full TLS handshake with a valid
+certificate. That pattern is ISP interference with a non-web port, and it is
+common on consumer connections in the region. A driver on 443 is indistinguishable
+from ordinary HTTPS and is left alone.
+
+The second reason would apply regardless: on serverless there is no long-lived
+process to keep a TCP pool warm between invocations, and a pool per instance is
+exactly how a database's connection limit gets exhausted once the platform
+scales out. An HTTP/WebSocket driver has no pool to exhaust.
+
+`PrismaNeon` and not `PrismaNeonHttp`, because the HTTP-only variant cannot run
+transactions — and accepting a request writes the status change and its audit
+event together.
+
 ---
 
 ## 1. Database (Neon)
@@ -40,7 +63,7 @@ this — one branch for production, one for local.
    its own connection pool, and the direct endpoint runs out of connections as
    soon as a few instances are alive at once.
 
-3. Apply the schema from your machine:
+3. Apply the schema:
 
    ```powershell
    # .env, DATABASE_URL = the Neon pooled string
@@ -49,6 +72,15 @@ this — one branch for production, one for local.
 
    That runs `prisma migrate deploy` against `prisma/migrations/0_init`, which
    creates both tables, the indexes and the foreign key.
+
+   **If this hangs and eventually reports `P1001: Can't reach database
+   server`, it is your network, not your connection string.** The Prisma CLI
+   speaks the Postgres wire protocol on port 5432, and many consumer and mobile
+   ISPs — Uzbek ones included — complete the TCP handshake on that port and then
+   drop the traffic, so it stalls rather than failing outright. The app itself is
+   unaffected: it uses Neon's WebSocket driver on port 443 (see below). Your
+   options are a VPN, or simply skipping this step — `netlify.toml` runs
+   `db:deploy` on every build, from Netlify's servers, where 5432 is open.
 
 4. Optional, to have something in the admin panel on day one:
 
@@ -178,15 +210,22 @@ Worth knowing before they surprise you, not reasons to avoid deploying:
 
 ## Local development after this change
 
-`.env` needs a real `DATABASE_URL` now — there is no SQLite fallback. Either
-point it at a Neon **development branch** (Branches → New branch in the Neon
-dashboard) so experiments cannot touch live client requests, or run Postgres in
-Docker:
+`.env` needs a real `DATABASE_URL` now — there is no SQLite fallback. Point it
+at a Neon **development branch** (Branches → New branch in the Neon dashboard)
+so experiments cannot touch live client requests.
 
-```powershell
-docker run --name malikov-pg -e POSTGRES_PASSWORD=dev -p 5432:5432 -d postgres:16
-# DATABASE_URL="postgresql://postgres:dev@localhost:5432/postgres"
-npm run db:deploy
-```
+`npm run dev`, `npm run db:seed` and the app itself all go through the Neon
+driver on 443, so they work even where 5432 is blocked. The Prisma CLI commands
+that open their own connection do **not**:
+
+| Command | Port | Works behind a 5432 block |
+| --- | --- | --- |
+| `npm run dev` / the app | 443 | Yes |
+| `npm run db:seed` | 443 | Yes |
+| `npm run db:deploy` | 5432 | No — runs on Netlify's build instead |
+| `npm run db:studio` | 5432 | No — use the Neon dashboard's SQL editor |
+
+If you want all of them locally, a VPN is the simplest fix. Otherwise let
+Netlify apply migrations and browse data in Neon's own console.
 
 `prisma/dev.db` is now dead weight and can be deleted.
