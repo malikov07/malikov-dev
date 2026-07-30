@@ -1,0 +1,98 @@
+// Malikov.dev — project intake database
+//
+// Postgres, because the app is deployed to a serverless host where the
+// filesystem is discarded between invocations — a SQLite file there would lose
+// every request on the next cold start. Nothing below is Postgres-specific, so
+// the same schema still runs on SQLite if this ever moves to a plain VM.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+  runtime  = "nodejs"
+}
+
+// Prisma 7 reads the connection URL from prisma.config.ts, not from here.
+datasource db {
+  provider = "postgresql"
+}
+
+/// One incoming project request, produced by the AI intake chat.
+model ProjectRequest {
+  id  String @id @default(cuid())
+  /// Short human-friendly reference shown to the client, e.g. "MD-7K2Q".
+  ref String @unique
+
+  // ---- What the client wants -------------------------------------------
+  /// website | telegram_bot | other | mobile_app
+  kind        String
+  title       String
+  summary     String
+  /// Slug from DESIGN_STYLES, e.g. "liquid-glass".
+  designStyle String?
+  /// JSON string[] — feature list the AI distilled from the conversation.
+  features    String  @default("[]")
+  /// JSON string[] — pages / screens / bot commands.
+  scope       String  @default("[]")
+  audience    String?
+  /// JSON string[] — e.g. ["en","ru","uz"].
+  languages   String  @default("[]")
+  references  String?
+  timeline    String?
+  /// Full structured brief as JSON, kept verbatim for the admin view.
+  brief       String  @default("{}")
+
+  // ---- Who they are ----------------------------------------------------
+  contactName   String
+  /// telegram | phone | email
+  contactMethod String
+  contactValue  String
+  /// Free text, or "anytime" when the client is always reachable.
+  availability  String @default("anytime")
+  timezone      String?
+
+  // ---- Money -----------------------------------------------------------
+  /// Exactly what the client said about budget, in their own words.
+  budgetText     String?
+  budgetMin      Int?
+  budgetMax      Int?
+  budgetCurrency String  @default("USD")
+  /// True when the client picked "I don't know" — never treated as $0.
+  budgetUnknown  Boolean @default(false)
+
+  // ---- Pipeline --------------------------------------------------------
+  /// new | accepted | rejected | in_progress | done
+  status       String    @default("new")
+  /// Message shown to the client with an accept/reject decision.
+  adminComment String?
+  /// Private scratch notes — admin only, never leaves the panel.
+  adminNotes   String?
+  decidedAt    DateTime?
+
+  /// JSON ChatMessage[] — the full intake conversation.
+  transcript String @default("[]")
+  locale     String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  events ProjectEvent[]
+
+  @@index([status, createdAt])
+}
+
+/// Append-only audit trail of everything the admin did to a request.
+model ProjectEvent {
+  id        String         @id @default(cuid())
+  projectId String
+  project   ProjectRequest @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  /// created | status_change | note
+  type       String
+  fromStatus String?
+  toStatus   String?
+  comment    String?
+  author     String   @default("admin")
+  createdAt  DateTime @default(now())
+
+  @@index([projectId, createdAt])
+}

@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>malikov-dev.uz — Instagram profile photo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 1080px;
+        height: 1080px;
+        overflow: hidden;
+        background: #04050a;
+      }
+
+      /* Instagram crops the avatar to a circle, so nothing that matters may sit
+         outside the inscribed circle — the four corners are always discarded.
+         The mark is sized to read at 32px, which is how most people will
+         actually see it (comments, story rings, search results). */
+      .frame {
+        position: relative;
+        width: 1080px;
+        height: 1080px;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(58% 54% at 22% 14%, #2f2178 0%, transparent 62%),
+          radial-gradient(50% 46% at 84% 30%, #0d5a78 0%, transparent 64%),
+          radial-gradient(62% 56% at 52% 98%, #52165f 0%, transparent 66%),
+          #04050a;
+      }
+
+      /* Still frame of the site's liquid-glass blobs. */
+      .blob {
+        position: absolute;
+        left: -60px;
+        top: 40px;
+        width: 620px;
+        height: 620px;
+        border-radius: 48% 52% 44% 56% / 52% 44% 56% 48%;
+        background: radial-gradient(
+          38% 34% at 34% 28%,
+          rgba(255, 255, 255, 0.5) 0%,
+          rgba(167, 139, 250, 0.16) 42%,
+          rgba(94, 231, 255, 0.06) 68%,
+          transparent 78%
+        );
+        filter: blur(2px);
+      }
+
+      .blob-2 {
+        position: absolute;
+        right: -110px;
+        bottom: -80px;
+        width: 560px;
+        height: 560px;
+        border-radius: 54% 46% 52% 48% / 46% 54% 46% 54%;
+        background: radial-gradient(
+          40% 36% at 62% 30%,
+          rgba(255, 107, 214, 0.34) 0%,
+          rgba(167, 139, 250, 0.14) 46%,
+          transparent 74%
+        );
+        filter: blur(4px);
+      }
+
+      /* Glow behind the mark, so it separates from the background even at 32px. */
+      .halo {
+        position: absolute;
+        width: 700px;
+        height: 700px;
+        border-radius: 50%;
+        background: radial-gradient(
+          closest-side,
+          rgba(94, 231, 255, 0.3),
+          rgba(167, 139, 250, 0.16) 52%,
+          transparent 76%
+        );
+        filter: blur(28px);
+      }
+
+      /* The mark is drawn, not typed.
+
+         An M is structurally two stems around a central V — and that V is the
+         caret `^` turned through 180°. So the letter and the coding symbol are
+         the same shape, and the mark can say both at once: the stems stay white
+         for legibility, the caret carries the prism gradient to mark it as the
+         deliberate part.
+
+         Geometry, in viewBox units: the stems sit at x=18 and x=82 and run from
+         y=12 to y=70, and the caret runs 18,12 → 50,56 → 82,12. The vertex
+         angle is 72°, so a mitered join comes to a clean point about 13 units
+         below the vertex — just clear of the stem feet, which is what makes it
+         read as an M rather than as a V between two bars. */
+      .mark {
+        position: relative;
+        width: 560px;
+        height: 460px;
+        filter: drop-shadow(0 0 44px rgba(94, 231, 255, 0.5))
+          drop-shadow(0 20px 56px rgba(4, 5, 10, 0.9));
+      }
+
+      .mark svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .stems {
+        stroke: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="frame">
+      <div class="blob"></div>
+      <div class="blob-2"></div>
+      <div class="halo"></div>
+
+      <div class="mark">
+        <svg viewBox="0 0 100 82" fill="none" role="img" aria-label="malikov-dev.uz">
+          <defs>
+            <linearGradient id="prism" x1="0" y1="0" x2="1" y2="0.4">
+              <stop offset="0" stop-color="#5ee7ff" />
+              <stop offset="0.46" stop-color="#a78bfa" />
+              <stop offset="1" stop-color="#ff6bd6" />
+            </linearGradient>
+          </defs>
+
+          <g
+            stroke-width="15"
+            stroke-linecap="round"
+            stroke-linejoin="miter"
+            stroke-miterlimit="4"
+          >
+            <!-- Stems: white, so the mark still reads as a letter at 32px. -->
+            <path class="stems" d="M18 70V12" />
+            <path class="stems" d="M82 70V12" />
+
+            <!-- The caret, rotated 180°. Drawn last so it sits over the stem
+                 ends and the colour change lands on the corner. -->
+            <path stroke="url(#prism)" d="M18 12 50 56 82 12" />
+          </g>
+        </svg>
+      </div>
+    </div>
+  </body>
+</html>
