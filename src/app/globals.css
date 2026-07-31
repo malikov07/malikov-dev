@@ -249,6 +249,27 @@ body {
   border-radius: 6px;
 }
 
+/* iOS Safari zooms the whole page in whenever a focused text field's font-size
+   is under 16px, and nothing the page does afterwards undoes it — the visitor is
+   left pinching their way back. Every field is affected: the chat composer, the
+   name and phone inputs, the admin login.
+
+   So the floor is set here once, rather than field by field. A new input should
+   not have to remember, and the intake form is the one place on this site where
+   a fumbled interaction costs an actual client.
+
+   Deliberately outside `@layer`: unlayered rules beat layered ones regardless of
+   specificity, so this wins over Tailwind's `text-[13px]` on the elements that
+   set one. Above `sm` the designed sizes apply again — no mobile browser does
+   this at that width. */
+@media (max-width: 639px) {
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
 /* Film grain, so the large gradients never band on cheap panels. */
 .grain::after {
   content: "";

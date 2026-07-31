@@ -74,6 +74,8 @@ export default function IntakeChat({
 
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const inputRef = useRef<HTMLTextAreaElement | null>(null);
+  // The newest assistant bubble, so its first line can be scrolled to.
+  const lastReplyRef = useRef<HTMLDivElement | null>(null);
   // Guards against double-submitting when the model sets done and the user
   // also presses confirm.
   const submitted = useRef(false);
@@ -86,9 +88,43 @@ export default function IntakeChat({
     });
   }, []);
 
+  /**
+   * Brings the *start* of the newest reply to the top of the transcript.
+   *
+   * Pinning to the bottom is wrong for anything tall: when the assistant sends
+   * a long message — or one that opens the design gallery underneath it — the
+   * bottom of that block is what ends up on screen, and its first line, the
+   * part explaining what to do, has already scrolled past. Aligning the top
+   * instead means a reply is always read from its beginning.
+   *
+   * Short replies are unaffected: there is nothing to scroll to, so the browser
+   * clamps this to the bottom of the range, which is the old behaviour.
+   */
+  const scrollToLastReply = useCallback((smooth = true) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    requestAnimationFrame(() => {
+      const msg = lastReplyRef.current;
+      const behavior = smooth ? "smooth" : "auto";
+      if (!msg) {
+        el.scrollTo({ top: el.scrollHeight, behavior });
+        return;
+      }
+      // Measured rather than read off offsetTop, which would depend on which
+      // ancestor happens to be positioned. The 14px keeps the bubble's top
+      // edge off the container edge.
+      const delta = msg.getBoundingClientRect().top - el.getBoundingClientRect().top;
+      el.scrollTo({ top: el.scrollTop + delta - 14, behavior });
+    });
+  }, []);
+
   useEffect(() => {
-    scrollToEnd();
-  }, [messages, widget, pending, scrollToEnd]);
+    // The visitor's own message and the typing indicator both belong at the
+    // bottom — that is where the eye already is. Only replies get anchored.
+    const last = messages[messages.length - 1];
+    if (last?.role === "assistant" && !pending) scrollToLastReply();
+    else scrollToEnd();
+  }, [messages, widget, pending, scrollToEnd, scrollToLastReply]);
 
   useEffect(() => {
     inputRef.current?.focus();
@@ -319,6 +355,11 @@ export default function IntakeChat({
         {messages.map((m, i) => (
           <motion.div
             key={`${i}-${m.at ?? 0}`}
+            ref={
+              m.role === "assistant" && i === messages.length - 1
+                ? lastReplyRef
+                : undefined
+            }
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
@@ -456,12 +497,10 @@ export default function IntakeChat({
               }
             }}
             placeholder={t.chat.placeholder}
-            // 16px on phones is not a design choice: below it, iOS Safari
-            // zooms the whole page in when the field takes focus, which pushes
-            // the send button off the right edge and cannot be undone by the
-            // visitor without pinching. The 14px design is kept from `sm` up,
-            // where no mobile browser does this.
-            className="max-h-[120px] min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[16px] text-white outline-none placeholder:text-haze-400 disabled:opacity-50 sm:text-[14px]"
+            // Renders at 16px below `sm` regardless of this: globals.css puts a
+            // floor under every form control so iOS cannot zoom the page on
+            // focus. See the comment there.
+            className="max-h-[120px] min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[14px] text-white outline-none placeholder:text-haze-400 disabled:opacity-50"
           />
           <button
             type="button"
