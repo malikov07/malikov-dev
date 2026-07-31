@@ -1,9 +1,9 @@
 // Malikov.dev — project intake database
 //
-// Postgres, because the app is deployed to a serverless host where the
-// filesystem is discarded between invocations — a SQLite file there would lose
-// every request on the next cold start. Nothing below is Postgres-specific, so
-// the same schema still runs on SQLite if this ever moves to a plain VM.
+// Postgres, running on the same machine as the app and reached over localhost.
+// Nothing below is Postgres-specific; the provider changed because the first
+// host discarded its filesystem between requests, which quietly emptied a
+// SQLite file, and Postgres stayed once the app moved onto its own server.
 
 generator client {
   provider = "prisma-client"

@@ -6,7 +6,7 @@
  * the rows it created, matched by their `MD-DEMO*` refs.
  */
 import path from "node:path";
-import { PrismaNeon } from "@prisma/adapter-neon";
+import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../src/generated/prisma/client";
 
 try {
@@ -20,10 +20,9 @@ if (!connectionString) {
   throw new Error("DATABASE_URL is not set — point it at your Postgres database.");
 }
 
-// Same driver as the app (see src/lib/db.ts) — over WebSockets on 443, so this
-// still runs on networks that interfere with the Postgres port.
+// Same driver as the app — see src/lib/db.ts.
 const prisma = new PrismaClient({
-  adapter: new PrismaNeon({ connectionString }),
+  adapter: new PrismaPg({ connectionString }),
 });
 
 const DEMOS = [
