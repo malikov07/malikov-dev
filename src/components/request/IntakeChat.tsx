@@ -267,7 +267,15 @@ export default function IntakeChat({
 
   // ---- conversation -------------------------------------------------------
   return (
-    <div className="flex h-[min(78vh,700px)] flex-col">
+    // `vh` is the *large* viewport: it ignores browser chrome and the keyboard
+    // alike, so with a keyboard open the panel kept asking for 78% of the whole
+    // screen and pushed its own composer out of sight. `dvh` handles the
+    // chrome; the max-height handles the keyboard, from the visual-viewport
+    // height that RequestProvider publishes (minus the dialog's own padding).
+    <div
+      className="flex h-[min(78dvh,700px)] flex-col"
+      style={{ maxHeight: "calc(var(--vvh, 100dvh) - 1.5rem)" }}
+    >
       {/* header */}
       <div className="relative shrink-0 border-b border-white/8 px-4 py-3 pr-14 sm:px-5">
         <div className="flex items-center gap-3">
@@ -448,7 +456,12 @@ export default function IntakeChat({
               }
             }}
             placeholder={t.chat.placeholder}
-            className="max-h-[120px] min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[14px] text-white outline-none placeholder:text-haze-400 disabled:opacity-50"
+            // 16px on phones is not a design choice: below it, iOS Safari
+            // zooms the whole page in when the field takes focus, which pushes
+            // the send button off the right edge and cannot be undone by the
+            // visitor without pinching. The 14px design is kept from `sm` up,
+            // where no mobile browser does this.
+            className="max-h-[120px] min-h-[36px] flex-1 resize-none bg-transparent py-2 text-[16px] text-white outline-none placeholder:text-haze-400 disabled:opacity-50 sm:text-[14px]"
           />
           <button
             type="button"

@@ -75,10 +75,36 @@ export default function RequestProvider({ children }: { children: ReactNode }) {
     // scroll its heading out of view.
     panelRef.current?.focus({ preventScroll: true });
 
+    // iOS does not shrink the layout viewport when the software keyboard opens.
+    // It keeps it at full height, shrinks the *visual* viewport, and scrolls
+    // that to reveal the focused field. A `fixed inset-0` dialog is sized and
+    // positioned against the layout viewport, so it ends up half-swallowed by
+    // the keyboard while the page appears to slide underneath it — which is
+    // what makes the background look like it is scrolling mid-conversation.
+    //
+    // Publishing the visual viewport's height and offset as custom properties
+    // lets the dialog track the region that is actually on screen. `dvh` is not
+    // a substitute: it follows browser chrome, but whether it reacts to a
+    // keyboard is left to the implementation, and in Safari it does not.
+    const root = document.documentElement;
+    const vv = window.visualViewport;
+    const syncViewport = () => {
+      if (!vv) return;
+      root.style.setProperty("--vvh", `${vv.height}px`);
+      root.style.setProperty("--vv-top", `${vv.offsetTop}px`);
+    };
+    syncViewport();
+    vv?.addEventListener("resize", syncViewport);
+    vv?.addEventListener("scroll", syncViewport);
+
     return () => {
       document.removeEventListener("keydown", onKey);
       document.body.style.overflow = overflow;
       document.body.style.paddingRight = paddingRight;
+      vv?.removeEventListener("resize", syncViewport);
+      vv?.removeEventListener("scroll", syncViewport);
+      root.style.removeProperty("--vvh");
+      root.style.removeProperty("--vv-top");
     };
   }, [isOpen, close]);
 
@@ -91,7 +117,14 @@ export default function RequestProvider({ children }: { children: ReactNode }) {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            className="fixed inset-0 z-[100] overflow-y-auto"
+            className="fixed inset-x-0 z-[100] overflow-y-auto"
+            // Falls back to the layout viewport before the effect above runs,
+            // and on browsers without visualViewport — both correct while no
+            // keyboard is open, which is the only time the two differ.
+            style={{
+              top: "var(--vv-top, 0px)",
+              height: "var(--vvh, 100dvh)",
+            }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
