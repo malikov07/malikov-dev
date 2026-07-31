@@ -13,10 +13,14 @@ The pitch on the site is **you pay after you see the finished project**.
 
 ```bash
 npm install
-cp .env.example .env      # then edit it — see below
-npm run db:push           # creates prisma/dev.db
+cp .env.example .env      # then edit it — DATABASE_URL is required
+npm run db:push           # applies the schema to that database
 npm run dev               # http://localhost:3000
 ```
+
+`DATABASE_URL` must point at a Postgres database — there is no local-file
+fallback. Use a local Postgres or any throwaway one, but never the production
+database: `db:push` changes schemas in place.
 
 Optional demo data so the admin panel isn't empty:
 
@@ -24,8 +28,8 @@ Optional demo data so the admin panel isn't empty:
 npm run db:seed
 ```
 
-The admin panel is at **/admin**. The default password is `admin` — change
-`ADMIN_PASSWORD` in `.env` before this goes anywhere public.
+The admin panel is at **/admin**, behind `ADMIN_PASSWORD` from `.env`. The
+example file ships a placeholder; production runs a real one.
 
 ---
 
@@ -116,7 +120,7 @@ time a request arrives.
 | Typography | The Apple system stack — real SF Pro on iOS/macOS, no webfont |
 | Animation | Motion (Framer Motion) |
 | Background | Hand-written WebGL/GLSL — no 3D library |
-| Database | Prisma 7 + SQLite (swap to Postgres in one line) |
+| Database | Prisma 7 + Postgres, via the node-postgres driver adapter |
 | AI | Gemini / OpenAI / Anthropic, via a small provider layer |
 | i18n | Locale-routed, no library |
 
@@ -132,13 +136,16 @@ It degrades on its own — reduced-motion draws one static frame, a lost context
 or missing WebGL falls back to a CSS gradient, a background tab stops
 rendering, and the resolution drops if frames run long.
 
-### Moving to Postgres
+### The database
 
-For a serverless host (Vercel, etc.) SQLite won't persist. Switch by changing
-`provider` in `prisma/schema.prisma` to `postgresql`, pointing `DATABASE_URL` at
-your database, swapping the adapter in `src/lib/db.ts` for
-`@prisma/adapter-pg`, and running `npm run db:push`. No schema changes needed —
-list fields are stored as JSON strings, which are portable as-is.
+Postgres, reached through Prisma's node-postgres driver adapter. It started as
+SQLite, which did not survive the first host — that one discarded its filesystem
+between requests, so the file was recreated empty and every request filed since
+the previous deploy disappeared, with the site still looking healthy.
+
+Nothing in the schema is Postgres-specific: list fields are stored as JSON
+strings, so they are portable as-is. See `DEPLOY.md` for how the deployed
+database is set up, backed up and restored.
 
 ---
 
