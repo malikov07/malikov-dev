@@ -3,7 +3,7 @@ import { Instrument_Serif } from "next/font/google";
 import { notFound } from "next/navigation";
 import LocaleProvider from "@/components/i18n/LocaleProvider";
 import { getDictionary } from "@/lib/i18n";
-import { isLocale, LOCALES, type Locale } from "@/lib/i18n/config";
+import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/lib/i18n/config";
 import "../globals.css";
 
 // Body text uses the Apple system stack (see --font-sans in globals.css), so
@@ -45,10 +45,13 @@ export async function generateMetadata({
     alternates: {
       canonical: `${SITE}/${locale}`,
       // hreflang, so each language surfaces for the right audience instead of
-      // the three competing as duplicates.
-      languages: Object.fromEntries(
-        LOCALES.map((l) => [l, `${SITE}/${l}`]),
-      ) as Record<string, string>,
+      // the three competing as duplicates. `x-default` is the one a search
+      // engine shows a visitor it cannot match to any of them, and it has to
+      // agree with where the redirect actually sends that visitor.
+      languages: {
+        ...Object.fromEntries(LOCALES.map((l) => [l, `${SITE}/${l}`])),
+        "x-default": `${SITE}/${DEFAULT_LOCALE}`,
+      } as Record<string, string>,
     },
     openGraph: {
       title: t.meta.title,

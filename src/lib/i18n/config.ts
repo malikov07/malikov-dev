@@ -1,7 +1,15 @@
 export const LOCALES = ["en", "ru", "uz"] as const;
 export type Locale = (typeof LOCALES)[number];
 
-export const DEFAULT_LOCALE: Locale = "en";
+/**
+ * Where a visitor lands when nothing better is known: no saved choice, and an
+ * Accept-Language that matches none of the three. The site sells development
+ * work in Uzbekistan, so Uzbek is the right guess for an unknown visitor.
+ *
+ * Note this is the fallback, not an override — a browser asking for Russian
+ * still gets `/ru`. See `pickLocale` below and `src/proxy.ts`.
+ */
+export const DEFAULT_LOCALE: Locale = "uz";
 
 export const LOCALE_META: Record<
   Locale,

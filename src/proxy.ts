@@ -7,8 +7,8 @@ const LOCALE_COOKIE = "md_locale";
  * Sends bare paths to a language.
  *
  * Order of preference: a locale the visitor picked before (cookie), then the
- * browser's Accept-Language, then English. Once redirected, the URL carries
- * the locale, so nothing downstream has to guess.
+ * browser's Accept-Language, then DEFAULT_LOCALE. Once redirected, the URL
+ * carries the locale, so nothing downstream has to guess.
  */
 export function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
