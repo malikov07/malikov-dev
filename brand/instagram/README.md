@@ -1,4 +1,4 @@
-# Instagram setup — malikov-dev.uz
+# Instagram setup — it-network.uz
 
 Everything needed to open the account and make the first post. Colours, type and
 the liquid-glass treatment are taken from the live site, so the profile and the
@@ -23,7 +23,7 @@ These are left as placeholders on purpose. Replace them everywhere they appear:
    `src/components/request/ChatWidgets.tsx` is example data). Needed for the
    profile's contact button.
 2. **Phone number** — same reason, if you want the call/WhatsApp button.
-3. **Is `malikov-dev.uz` live yet?** The post image prints that domain and the
+3. **Is `it-network.uz` live yet?** The post image prints that domain and the
    bio link points at it. If it is not serving the site yet, point the link at
    your Telegram instead and swap the footer text in `post-services.html` —
    sending traffic to a dead domain is worse than sending none.
@@ -39,9 +39,10 @@ Open the account with a personal profile, then convert:
 Business (not Creator) is the right one: it allows the **contact buttons** and
 the **action button**, which Creator restricts.
 
-- **Category:** `Web designer` — or `Software company` if you would rather look
-  like a studio than a freelancer. Both are searchable; `Web designer` converts
-  better for small local clients because it is a job they recognise.
+- **Category:** `Software company` — the name says team, so the category should
+  agree. `Web designer` is the alternative and converts a little better with
+  small local clients because it is a job they recognise, but it reads as one
+  freelancer, which is no longer what you are.
 - **Show category on profile:** on.
 - **Contact options:** Telegram is not a native Instagram contact type, so use
   **email** as the button and put the Telegram handle in the bio text where it
@@ -50,16 +51,21 @@ the **action button**, which Creator restricts.
 ## 2. Username
 
 **Instagram usernames cannot contain a hyphen** — only letters, digits, periods
-and underscores. So `malikov-dev` is not available to you as a handle no matter
+and underscores. So `it-network` is not available to you as a handle no matter
 what, and the domain cannot be matched character for character. Closest options,
 in order of preference:
 
 | Username | Notes |
 | --- | --- |
-| `malikovdev.uz` | Closest legal match to `malikov-dev.uz` — same words, same TLD signal. |
-| `malikov.dev` | Cleanest to read and say. Different from the domain, but not confusingly so. |
-| `malikovdev` | Grab whichever of these you can as well, to keep someone else off the name. |
-| `malikov.dev.uz` | Only if the two above are taken — three separators is a lot. |
+| `itnetwork.uz` | Closest legal match to `it-network.uz` — same words, same TLD signal. |
+| `it.network` | Cleanest to read and say. Different from the domain, but not confusingly so. |
+| `itnetwork` | Grab whichever of these you can as well, to keep someone else off the name. |
+| `it.network.uz` | Only if the two above are taken — three separators is a lot. |
+
+Check all four before you settle on one. "IT network" is two ordinary words, so
+unlike the old name these are likely already taken somewhere — and a handle
+that is close but not the one you print on your own posts is worse than a
+slightly longer one that you can use consistently everywhere.
 
 Avoid digits and underscores beyond this — they read as an unofficial or backup
 account, which is the opposite of what a paid-work profile needs.
@@ -78,8 +84,9 @@ So it must carry the keywords a client would actually type, not your name.
 | Russian | `Сайты и Telegram-боты` | 21 |
 | English | `Websites & Telegram bots` | 24 |
 
-Your own name already lives in the username, so spending these 30 characters on
-"Malikov" again would waste the only searchable field you get.
+The team name already lives in the username, so spending these 30 characters on
+"IT-Network" again would waste the only searchable field you get — and "IT" and
+"network" are words clients search for far less often than "sayt" or "bot".
 
 ## 4. Bio (150 character limit)
 
@@ -94,7 +101,7 @@ pricing in the site both point at the local market as the primary audience.
 Sayt • Telegram bot • avtomatlashtirish
 Reja — 2 daqiqa. To‘lov — tayyor bo‘lgandan keyin.
 Narx oldindan aniq
-malikov-dev.uz ⤵️
+it-network.uz ⤵️
 ```
 
 **Russian** — for a Tashkent audience that browses in Russian.
@@ -103,7 +110,7 @@ malikov-dev.uz ⤵️
 Сайты • Telegram-боты • автоматизация
 План — 2 минуты. Оплата — после сдачи.
 Цена известна заранее
-malikov-dev.uz ⤵️
+it-network.uz ⤵️
 ```
 
 **English** — if you want to take work from outside the region.
@@ -112,7 +119,7 @@ malikov-dev.uz ⤵️
 Websites • Telegram bots • automation
 Plan in 2 minutes. You pay after delivery.
 Fixed price up front
-malikov-dev.uz ⤵️
+it-network.uz ⤵️
 ```
 
 Line breaks work in the Instagram bio, but the editor on some Android builds
@@ -127,7 +134,7 @@ advertises it, so it should never be below the fold.
 
 One primary link, plus up to four more under **Edit profile → Links**.
 
-1. `https://malikov-dev.uz` — primary. The request chat is the conversion point,
+1. `https://it-network.uz` — primary. The request chat is the conversion point,
    so send people straight there rather than to a link aggregator.
 2. `https://t.me/<your-handle>` — secondary, for people who want to talk first.
 
@@ -178,14 +185,38 @@ Keep that constraint for anything you add.
 | # | Post | Why |
 | --- | --- | --- |
 | 1 | `post-services.png` | What you do, and the pay-after-delivery promise. |
-| 2 | Screen recording of the request chat | The chat is the product's best feature and nobody else has it. |
-| 3 | The ten design styles | Reuse `StylePreview` from the site; screenshot the strip. |
+| 2 | `reel/reel-yes-chain.mp4` | Reel. Four small requests, four yeses — sells permission to ask. |
+| 3 | `reel/reel-message.mp4` | Reel. One plain message becomes a finished site. |
 | 4 | Price honesty post | "Kichik loyihalar ham qabul qilinadi" — the small-budget message from the site. |
 
 Three posts is enough to look established. An empty grid behind a paid link is
 what makes people bounce.
 
+The two reels, their captions, and the five working demo sites they film live
+in [`reel/`](reel/README.md) — including the note that **you must add music in
+the Instagram editor**, because the rendered MP4s are silent.
+
+Reels are what will actually grow the account: Instagram pushes them to people
+who do not follow you, which a feed image never gets. The static post above is
+what a visitor sees *after* a reel sends them to your profile, so it still
+earns its place at the top of the grid.
+
 ## 8. Re-rendering the images
+
+Easiest, if you have already rendered the reels once — `reel/` carries
+playwright-core and a Chromium for the video, so the same browser can do the
+stills:
+
+```bash
+cd reel
+node render-posts.mjs
+```
+
+That writes `profile-photo.png` (1080×1080) and `post-services.png` (1080×1350)
+at exact size, with the background animations pinned so two runs give the same
+image. It is the reliable way to keep the two in step after a brand change.
+
+The hand route below needs nothing installed, and is still worth knowing.
 
 Chromium blocks `file:` URLs, so the files have to be served rather than opened
 directly. The dev server already serves anything under `public/`:

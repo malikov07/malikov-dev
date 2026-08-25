@@ -278,12 +278,12 @@ export const STATUS_META: Record<
   },
 };
 
-/** Human-friendly reference, e.g. "MD-7K2Q". Ambiguous glyphs removed. */
+/** Human-friendly reference, e.g. "ITN-7K2Q". Ambiguous glyphs removed. */
 export function makeRef(): string {
   const alphabet = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let out = "";
   for (let i = 0; i < 4; i++) {
     out += alphabet[Math.floor(Math.random() * alphabet.length)];
   }
-  return `MD-${out}`;
+  return `ITN-${out}`;
 }

@@ -1,4 +1,4 @@
-// Malikov.dev — project intake database
+// IT-Network — project intake database
 //
 // Postgres, running on the same machine as the app and reached over localhost.
 // Nothing below is Postgres-specific; the provider changed because the first

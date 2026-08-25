@@ -6,7 +6,7 @@ import type { Dictionary } from "./en";
  */
 export const ru: Dictionary = {
   meta: {
-    title: "Malikov — сайты и Telegram-боты, сделанные как надо",
+    title: "IT-Network — сайты и Telegram-боты, сделанные как надо",
     description:
       "Сайты на заказ, Telegram-боты и автоматизация. Расскажите об идее ИИ-ассистенту, получите план за пару минут и платите только после того, как увидите готовый проект.",
     ogDescription:
@@ -23,7 +23,7 @@ export const ru: Dictionary = {
     openMenu: "Открыть меню",
     closeMenu: "Закрыть меню",
     language: "Язык",
-    home: "Malikov — на главную",
+    home: "IT-Network — на главную",
   },
 
   hero: {

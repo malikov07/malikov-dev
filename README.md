@@ -1,9 +1,9 @@
-# malikov.dev
+# it-network.uz
 
-A studio site for taking website, Telegram bot and automation work. Clients
-describe what they want to an AI assistant in plain language; it turns the
-conversation into a structured brief and files it. You accept or reject each
-one from an admin panel, with a comment.
+The IT-Network site for taking website, Telegram bot and automation work.
+Clients describe what they want to an AI assistant in plain language; it turns
+the conversation into a structured brief and files it. You accept or reject
+each one from an admin panel, with a comment.
 
 The pitch on the site is **you pay after you see the finished project**.
 
@@ -84,7 +84,7 @@ language the client is browsing in, and switches if they write in another one.
 - A fourth language means adding it to `LOCALES` in `src/lib/i18n/config.ts`
   plus one new dictionary file.
 
-The admin panel stays in English — it's a private tool for one person.
+The admin panel stays in English — it's an internal tool, not a client surface.
 
 ---
 
@@ -99,7 +99,7 @@ The admin panel stays in English — it's a private tool for one person.
 4. It asks about budget, with **"I don't know"** as a first-class answer. That's
    stored as `budgetUnknown`, never as a budget of zero.
 5. It reads the whole brief back. Once confirmed, the request is saved and the
-   client gets a reference like `MD-7K2Q`.
+   client gets a reference like `ITN-7K2Q`.
 6. You see it in `/admin` and **Accept** or **Reject** with a comment, then move
    it to *In progress* and *Done* as you work.
 
@@ -201,4 +201,5 @@ npm run db:seed     # insert demo requests
       (the app refuses to start without it in production)
 - [ ] Add an AI key
 - [ ] Move to Postgres if the host has no persistent disk
-- [ ] Point `SITE` in `src/app/layout.tsx` at the real domain
+- [ ] Set `NEXT_PUBLIC_SITE_URL` if the site is not on `https://it-network.uz`
+      (it is read at **build** time — see `DEPLOY.md`)

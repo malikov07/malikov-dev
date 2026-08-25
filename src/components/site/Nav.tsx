@@ -1,11 +1,17 @@
 "use client";
 
-import { AnimatePresence, motion, useScroll, useMotionValueEvent } from "motion/react";
+import {
+  AnimatePresence,
+  motion,
+  useScroll,
+  useMotionValueEvent,
+} from "motion/react";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import LanguageSwitcher from "@/components/i18n/LanguageSwitcher";
 import { useT } from "@/components/i18n/LocaleProvider";
+import Logo from "./Logo";
 import RequestButton from "./RequestButton";
 
 export default function Nav() {
@@ -45,21 +51,10 @@ export default function Nav() {
         >
           <Link
             href="/"
-            className="group flex shrink-0 items-center gap-2.5 pl-1"
+            className="flex shrink-0 items-center pl-1"
             aria-label={t.nav.home}
           >
-            <span className="relative grid size-8 place-items-center">
-              {/* Prism mark: a rotating conic ring around a glass core. */}
-              <span className="absolute inset-0 animate-orbit rounded-[10px] bg-[conic-gradient(from_0deg,var(--color-prism-cyan),var(--color-prism-violet),var(--color-prism-pink),var(--color-prism-cyan))] opacity-90" />
-              <span className="absolute inset-[1.5px] rounded-[8.5px] bg-ink-950" />
-              <span className="relative text-[13px] font-semibold tracking-tight text-white">
-                M
-              </span>
-            </span>
-            <span className="text-[15px] font-medium tracking-tight text-white">
-              malikov
-              <span className="text-haze-400">-dev</span>
-            </span>
+            <Logo spin />
           </Link>
 
           <div className="mx-auto hidden items-center gap-1 md:flex">
@@ -91,7 +86,11 @@ export default function Nav() {
               aria-expanded={menuOpen}
               className="grid size-9 place-items-center rounded-full border border-white/10 bg-white/[.04] text-haze-200 transition hover:text-white md:hidden"
             >
-              {menuOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+              {menuOpen ? (
+                <X className="size-4" />
+              ) : (
+                <Menu className="size-4" />
+              )}
             </button>
           </div>
         </nav>

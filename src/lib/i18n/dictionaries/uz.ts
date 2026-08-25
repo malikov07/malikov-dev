@@ -6,7 +6,7 @@ import type { Dictionary } from "./en";
  */
 export const uz: Dictionary = {
   meta: {
-    title: "Malikov — saytlar va Telegram botlar, sifatli qilingan",
+    title: "IT-Network — saytlar va Telegram botlar, sifatli qilingan",
     description:
       "Buyurtma asosida saytlar, Telegram botlar va avtomatlashtirish. G‘oyangizni AI yordamchiga ayting, bir necha daqiqada reja oling va tayyor loyihani ko‘rganingizdan keyingina to‘lang.",
     ogDescription:
@@ -23,7 +23,7 @@ export const uz: Dictionary = {
     openMenu: "Menyuni ochish",
     closeMenu: "Menyuni yopish",
     language: "Til",
-    home: "Malikov — bosh sahifa",
+    home: "IT-Network — bosh sahifa",
   },
 
   hero: {

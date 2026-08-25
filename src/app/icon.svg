@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
-    <linearGradient id="prism" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="prism" gradientUnits="userSpaceOnUse" x1="10" y1="9" x2="54" y2="55">
       <stop offset="0%" stop-color="#5ee7ff"/>
       <stop offset="50%" stop-color="#a78bfa"/>
       <stop offset="100%" stop-color="#ff6bd6"/>
@@ -8,5 +8,19 @@
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#prism)"/>
   <rect x="3" y="3" width="58" height="58" rx="13.5" fill="#04050a"/>
-  <path d="M18 44V21h5.6l8.4 13.2L40.4 21H46v23h-5.4V30.6L33 42.2h-2L23.4 30.6V44H18Z" fill="#fff"/>
+  <!-- Four nodes joined by three links: an "N" and a network graph at once.
+       Drawn heavier and closer to the edges than the web mark — at a 16px tab
+       icon the ring is already taking 3px, and a timid glyph inside it just
+       turns to mush. -->
+  <g stroke="#fff" stroke-width="6" stroke-linecap="round">
+    <path d="M19 18V46"/>
+    <path d="M45 18V46"/>
+    <path d="M19 18L45 46"/>
+  </g>
+  <g fill="url(#prism)">
+    <circle cx="19" cy="18" r="8.5"/>
+    <circle cx="45" cy="18" r="8.5"/>
+    <circle cx="19" cy="46" r="8.5"/>
+    <circle cx="45" cy="46" r="8.5"/>
+  </g>
 </svg>

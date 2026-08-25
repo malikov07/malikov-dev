@@ -24,7 +24,7 @@ const instrument = Instrument_Serif({
 // `||` rather than `??`: the variable is present-but-empty in .env.example, and
 // an empty string would reach `new URL("")` and throw during the build.
 const SITE = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://malikov-dev.uz"
+  process.env.NEXT_PUBLIC_SITE_URL || "https://it-network.uz"
 ).replace(/\/$/, "");
 
 export function generateStaticParams() {
@@ -40,7 +40,7 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(SITE),
-    title: { default: t.meta.title, template: "%s · Malikov" },
+    title: { default: t.meta.title, template: "%s · IT-Network" },
     description: t.meta.description,
     alternates: {
       canonical: `${SITE}/${locale}`,
@@ -57,7 +57,7 @@ export async function generateMetadata({
       title: t.meta.title,
       description: t.meta.ogDescription,
       url: `${SITE}/${locale}`,
-      siteName: "Malikov",
+      siteName: "IT-Network",
       locale,
       type: "website",
     },

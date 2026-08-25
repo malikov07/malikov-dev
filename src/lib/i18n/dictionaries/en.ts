@@ -6,7 +6,7 @@
  */
 export const en = {
   meta: {
-    title: "Malikov — Websites & Telegram bots, built properly",
+    title: "IT-Network — Websites & Telegram bots, built properly",
     description:
       "Custom websites, Telegram bots and automation. Describe your idea to the AI assistant, get a plan in minutes, and pay only after you see the finished project.",
     ogDescription:
@@ -23,7 +23,7 @@ export const en = {
     openMenu: "Open menu",
     closeMenu: "Close menu",
     language: "Language",
-    home: "Malikov — home",
+    home: "IT-Network — home",
   },
 
   hero: {
