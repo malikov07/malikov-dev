@@ -3,13 +3,9 @@
 The site runs on a single Ubuntu 24.04 VM that also holds its database. No
 platform, no managed services, nothing to bill by the request.
 
-> **The rename from `malikov-dev` to `it-network` is half done.** Everything
-> facing the outside world — DNS, the certificate, nginx, the canonical tags —
-> is on the new name and serving. Everything *inside* the box still uses the
-> old one: `/srv/malikov-dev`, `malikov-dev.service`, `malikov-deploy`,
-> `malikov-backup`, the `malikov` system user and the nginx snippet filenames.
-> So where a command below says `it-network`, type `malikov` until the
-> remaining steps at the end of this file have been run.
+> The Postgres role, the database and the GitHub repo are still named for
+> `malikov`. That is deliberate — see **The rename from malikov-dev** at the
+> end of this file. Everything else on the box is `it-network`.
 
 | | |
 | --- | --- |
@@ -236,189 +232,50 @@ failing in a way that looks like a build bug.
 
 ---
 
-## Renaming from malikov-dev (one-off)
+## The rename from malikov-dev
 
-The Postgres role and database keep their old names on purpose — see
-**Database** above. Nothing here touches them.
+Done on 2026-08-26. The box, the domain and the site all say IT-Network now.
+These stayed on the old name deliberately:
 
-Take a dump first, and pull it off the box before you start:
+- **The Postgres role `malikov` and the database `malikov_dev`** — internal,
+  never user-visible, and not worth the downtime. The nightly dumps are still
+  named `malikov_dev-*.sql.gz` for the same reason. See **Database** above.
+- **The GitHub repo `malikov07/malikov-dev`**, which is why
+  `it-network.service` carries that URL in `Documentation=`. Renaming it is
+  safe — GitHub redirects the old URL, so a deploy mid-rename still fetches —
+  but update the remote afterwards on both machines: `git remote set-url origin
+  <new-url>`, and the checkout's remote in `/srv/it-network/app` too.
+- **The box's hostname, still `malikov`.** `hostnamectl set-hostname` alone
+  will not hold it: `/etc/cloud/cloud.cfg` sets `preserve_hostname: false`, so
+  cloud-init rewrites it from Azure metadata on every boot. Making it stick
+  needs a drop-in with `preserve_hostname: true`. Cosmetic — it appears in
+  `journalctl` output and nowhere a user can see.
+- **The local clone's `malikov_dev` directory.** Nothing reads that name.
+- **Instagram**: the handle still names the old domain. The rendered assets in
+  `brand/instagram/` have been redrawn; they are regenerated from the HTML in
+  that directory.
 
-```bash
-ssh azureuser@20.91.224.41
-sudo systemctl start malikov-backup
-ls -lh /var/backups/malikov-dev/
-```
+### malikov-dev.uz is gone
 
-### Done: DNS, certificate, nginx, canonical tags
+The old domain was lost rather than retired. Its certificate is deleted and its
+nginx redirect block removed, so nothing here answers to it. There is no path
+from the old name to this site any more — an old link now reaches whoever
+registers the domain next.
 
-Steps 1, 2 and 5 of the original procedure have been carried out, along with
-the `NEXT_PUBLIC_SITE_URL` change and the rebuild. The site serves on
-`https://it-network.uz` with its own Let's Encrypt certificate
-(`it-network.uz` + `www.it-network.uz`, separate from the old one), the old
-hostnames `301` to the new, and every canonical and `hreflang` tag names
-`it-network.uz`.
+### Two things that bit on the way, worth knowing before the next one
 
-Two things did not go the way the original text assumed, and are worth knowing
-before anyone reruns any of it:
-
-- **`malikov-dev.uz` no longer resolves to this box** — it points at
-  `91.212.89.6`. So the "one certificate over all four hostnames" command in
-  the old step 2 *cannot* work: certbot proves ownership over HTTP against this
-  machine, and the old names no longer arrive here. The new certificate covers
-  the two new hostnames only. The `301` block for the old domain is kept as a
-  safety net for anything still pinned to the old address, but nothing reaches
-  it in practice, and the old certificate has no renewal path once the DNS is
-  gone. **Decide deliberately whether to point `malikov-dev.uz` back here for
-  the redirect, or let it go** — see **the old domain redirects** below.
-- **`certbot --nginx` cloned the wrong server block.** With the new hostname
-  absent from every `server_name`, it took the `return 444;` default block as
-  its template, so it produced a TLS block for `it-network.uz` that held a
-  valid certificate and `return 444;` — a correct handshake followed by a
-  connection closed with no response. From outside this looks exactly like a
-  broken site while `systemctl status nginx` reports everything healthy. The
-  config was rewritten by hand afterwards; if you ever run `certbot --nginx`
-  for a hostname nginx does not already serve, read the block it generated
-  before trusting the reload.
-
-### Done: the old domain redirects to the new one
-
-The old hostnames are split out into a block that only redirects, so existing
-links and anything already indexed keep working:
-
-```nginx
-server {
-    listen 443 ssl;
-    server_name malikov-dev.uz www.malikov-dev.uz;
-    return 301 https://it-network.uz$request_uri;
-}
-```
-
-`301`, not `302` — a search engine only moves the ranking across for a
-permanent redirect.
-
-**This block is currently unreachable**, and the old certificate can no longer
-renew. `certbot renew --dry-run` reports it exactly:
-
-```
-Domain: www.malikov-dev.uz
-Detail: DNS problem: NXDOMAIN looking up A for www.malikov-dev.uz
-Domain: malikov-dev.uz
-Detail: 91.212.89.6: Invalid response from
-        http://malikov-dev.uz/.well-known/acme-challenge/… : 404
-```
-
-The apex points at `91.212.89.6` and the `www` record does not exist at all, so
-certbot cannot prove ownership against this box. The `it-network.uz`
-certificate renews cleanly in the same run; only the old one fails. Until this
-is resolved, `certbot.timer` logs a renewal failure on every attempt — noise
-rather than breakage, but it will not stop on its own, and the old certificate
-lapses on 2026-10-29.
-
-Two ways out, and it is a judgement call about the old name, not a technical
-one:
-
-- **Keep it.** Point `malikov-dev.uz` `A` at `20.91.224.41` and add the `www`
-  record. The redirect starts working, the certificate renews, old links and
-  any accumulated ranking survive.
-- **Drop it.** Delete the old certificate and this `server` block together —
-  `sudo certbot delete --cert-name malikov-dev.uz`, then remove the block and
-  reload. **In that order the block must go before the reload**: nginx refuses
-  to start with a `ssl_certificate` path that no longer exists, so deleting the
-  certificate and reloading without editing the config takes the site down.
-
-The `444` default blocks — one on `80`, one on `443` — are the last two
-`server` entries in the file. An unknown `Host` on either port gets the
-connection closed with no response.
-
-### Still to do: rename on disk and in systemd
-
-```bash
-sudo systemctl stop malikov-dev malikov-backup.timer
-
-sudo usermod  -l it-network malikov   # login name only — uid and gid unchanged
-sudo groupmod -n it-network malikov
-sudo mv /srv/malikov-dev /srv/it-network
-sudo mv /var/backups/malikov-dev /var/backups/it-network
-sudo chown -R it-network:it-network /srv/it-network
-
-cd /etc/systemd/system
-sudo mv malikov-dev.service    it-network.service
-sudo mv malikov-backup.service it-network-backup.service
-sudo mv malikov-backup.timer   it-network-backup.timer
-sudo mv /usr/local/bin/malikov-deploy /usr/local/bin/it-network-deploy
-```
-
-`usermod -l` changes the name and nothing else, so every file the app owns is
-still owned by it afterwards. It refuses to run while a process of that user is
-alive — that is what the `stop` on the first line is for.
-
-### Still to do: edit what those files say inside
-
-Renaming the files is only half of it: each one still carries the old paths in
-its contents. Open each and replace `malikov-dev` with `it-network`,
-`/srv/malikov-dev` with `/srv/it-network`, `/var/backups/malikov-dev` with
-`/var/backups/it-network`, and `User=`/`Group=` with `it-network`. The timer's
-`Unit=` has to name the renamed service. **Leave every `malikov_dev` and the
-`malikov` in `DATABASE_URL` exactly as they are** — those are the database.
-
-The nginx side has two more of these than the original list admitted: the site
-file is still `sites-available/malikov-dev` (with its symlink in
-`sites-enabled/`), and it `include`s `snippets/malikov-proxy.conf` and
-`snippets/malikov-headers.conf`. Rename the snippets and the site file together
-with the `include` lines that name them, or leave all four alone — a half-done
-rename here is what takes the site down.
-
-```bash
-sudo grep -rn 'malikov-dev\|/srv/malikov\|=malikov$' \
-  /etc/systemd/system/it-network.service \
-  /etc/systemd/system/it-network-backup.service \
-  /etc/systemd/system/it-network-backup.timer \
-  /usr/local/bin/it-network-deploy \
-  /etc/nginx/sites-available/ /etc/nginx/snippets/
-```
-
-That has to come back empty before you go on. `NEXT_PUBLIC_SITE_URL` is already
-set to `https://it-network.uz` — leave it.
-
-### Still to do: restart under the new names
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable --now it-network it-network-backup.timer
-sudo nginx -t && sudo systemctl reload nginx
-sudo it-network-deploy
-```
-
-The deploy at the end is no longer needed for `NEXT_PUBLIC_SITE_URL` — that
-build has already run. It is here because `npm ci` and the build have to happen
-under the renamed user and path before the service is trusted again.
-
-### Check
-
-```bash
-systemctl status it-network it-network-backup.timer
-curl -sI https://it-network.uz/uz | head -1     # 200
-curl -s  https://it-network.uz/uz | grep -o 'rel="canonical"[^>]*'
-sudo systemctl start it-network-backup && ls -lh /var/backups/it-network/
-```
-
-Then walk the list in **What to check after a deploy**.
-
-If it goes wrong, all of what remains is a rename: `usermod -l`, the `mv`s and
-the nginx block all reverse the same way round. The one step that does not is
-the build, and `sudo it-network-deploy` simply runs it again.
-
-### Elsewhere, off the server
-
-- The GitHub repo is still `malikov07/malikov-dev`. Renaming it is safe —
-  GitHub redirects the old URL, so a deploy mid-rename still fetches — but
-  update the remote afterwards on both machines:
-  `git remote set-url origin <new-url>`, and the checkout's remote in
-  `/srv/it-network/app` too.
-- The local clone is in a `malikov_dev` directory. Nothing reads that name; it
-  is only cosmetic.
-- Instagram: the handle and the rendered assets in `brand/instagram/` both name
-  the old domain. The assets are regenerated from the HTML in that directory.
+- **`certbot --nginx` clones whatever block it can find.** Asked for a hostname
+  that appeared in no `server_name`, it used the `return 444;` default block as
+  its template and produced a TLS block holding a valid certificate *and*
+  `return 444;` — a correct handshake, then a connection closed with no
+  response. From outside that is indistinguishable from a dead site, while
+  `systemctl status nginx` and `nginx -t` both report everything healthy. If
+  you ever run `certbot --nginx` for a name nginx does not already serve, read
+  the block it wrote before trusting the reload.
+- **The `.env` symlink was absolute.** It pointed at `/srv/malikov-dev/.env`,
+  not `../.env` as this file used to claim, so moving the directory left it
+  dangling — and a dangling `.env` means no `DATABASE_URL`, which the app only
+  finds out at boot. It is relative now, so the next move cannot break it.
 
 ---
 
