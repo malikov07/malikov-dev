@@ -217,6 +217,13 @@ systemd-cgtop -1 -n1
 OOM-killed, at the cost of being slower. Do not remove it — deploys will start
 failing in a way that looks like a build bug.
 
+Swap alone is not enough, though: Node caps its own heap at about half the
+physical RAM (~450 MB here) and dies with "JavaScript heap out of memory" long
+before it would touch swap. So `npm run build` raises the cap with
+`NODE_OPTIONS=--max-old-space-size=1536`, which is what lets the build actually
+use the swapfile. The three.js type definitions were what first pushed the
+type-check step over the default cap.
+
 ---
 
 ## What to check after a deploy
