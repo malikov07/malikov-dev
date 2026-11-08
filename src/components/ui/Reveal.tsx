@@ -56,6 +56,10 @@ export function Reveal({
       scale: 1,
       filter: "blur(0px)",
       transition: { duration, delay, ease: [0.16, 1, 0.3, 1] },
+      // A leftover `filter` — even blur(0px) — makes this element a backdrop
+      // root, and every glass card inside it would then blur only its own
+      // subtree instead of the 3D scene behind the page.
+      transitionEnd: { filter: "none" },
     },
   };
 
@@ -127,6 +131,7 @@ export function RevealItem({
           y: 0,
           filter: "blur(0px)",
           transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] },
+          transitionEnd: { filter: "none" },
         },
       }}
     >

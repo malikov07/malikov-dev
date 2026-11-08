@@ -44,7 +44,7 @@ export default function LoginForm() {
         className="glass-strong w-full max-w-sm rounded-3xl p-7"
       >
         <div className="mx-auto grid size-12 place-items-center rounded-2xl border border-white/12 bg-white/[.06]">
-          <KeyRound className="size-5 text-prism-cyan" strokeWidth={1.6} />
+          <KeyRound className="size-5 text-prism-a" strokeWidth={1.6} />
         </div>
 
         <h1 className="mt-5 text-center text-xl font-medium tracking-tight text-white">
@@ -61,7 +61,7 @@ export default function LoginForm() {
           autoFocus
           autoComplete="current-password"
           placeholder="Password"
-          className="mt-6 w-full rounded-xl border border-white/10 bg-white/[.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-haze-400 focus:border-prism-cyan/60 focus:bg-white/[.07]"
+          className="mt-6 w-full rounded-xl border border-white/10 bg-white/[.04] px-4 py-3 text-sm text-white outline-none transition placeholder:text-haze-400 focus:border-prism-a/60 focus:bg-white/[.07]"
         />
 
         {error && (
@@ -73,7 +73,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={busy || !password}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(94,231,255,.8)] disabled:opacity-40"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(108,242,200,.8)] disabled:opacity-40"
         >
           {busy && <Loader2 className="size-4 animate-spin" />}
           {busy ? "Checking…" : "Sign in"}

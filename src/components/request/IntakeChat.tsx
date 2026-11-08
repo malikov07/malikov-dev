@@ -293,7 +293,7 @@ export default function IntakeChat({
         <button
           type="button"
           onClick={onClose}
-          className="mt-7 rounded-full bg-white px-6 py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(94,231,255,.8)]"
+          className="mt-7 rounded-full bg-white px-6 py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(108,242,200,.8)]"
         >
           {t.success.done}
         </button>
@@ -326,7 +326,7 @@ export default function IntakeChat({
 
           <div className="min-w-0 flex-1">
             <div className="flex items-center gap-2">
-              <Sparkles className="size-3.5 text-prism-cyan" />
+              <Sparkles className="size-3.5 text-prism-a" />
               <span className="truncate text-sm font-medium text-white">
                 {t.kinds[kind].label} {t.chat.headerSuffix}
               </span>
@@ -340,7 +340,7 @@ export default function IntakeChat({
         {/* progress */}
         <div className="mt-3 h-[3px] overflow-hidden rounded-full bg-white/8">
           <motion.div
-            className="h-full rounded-full bg-gradient-to-r from-prism-cyan via-prism-violet to-prism-pink"
+            className="h-full rounded-full bg-gradient-to-r from-prism-a via-prism-b to-prism-c"
             animate={{ width: `${progress}%` }}
             transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           />
@@ -351,6 +351,7 @@ export default function IntakeChat({
       <div
         ref={scrollRef}
         className="hide-scrollbar flex-1 space-y-3.5 overflow-y-auto px-4 py-5 sm:px-5"
+        data-lenis-prevent
       >
         {messages.map((m, i) => (
           <motion.div
@@ -461,7 +462,7 @@ export default function IntakeChat({
                 type="button"
                 disabled={busy}
                 onClick={() => send(q)}
-                className="rounded-full border border-white/12 bg-white/[.04] px-3 py-1.5 text-xs text-haze-200 transition hover:border-prism-cyan/50 hover:bg-white/[.08] hover:text-white disabled:opacity-50"
+                className="rounded-full border border-white/12 bg-white/[.04] px-3 py-1.5 text-xs text-haze-200 transition hover:border-prism-a/50 hover:bg-white/[.08] hover:text-white disabled:opacity-50"
               >
                 {q}
               </button>
@@ -478,7 +479,7 @@ export default function IntakeChat({
 
       {/* composer */}
       <div className="shrink-0 border-t border-white/8 p-3 sm:p-4">
-        <div className="flex items-end gap-2 rounded-2xl border border-white/15 bg-white/[.09] p-1.5 pl-3.5 transition focus-within:border-prism-cyan/60 focus-within:bg-white/[.13]">
+        <div className="flex items-end gap-2 rounded-2xl border border-white/15 bg-white/[.09] p-1.5 pl-3.5 transition focus-within:border-prism-a/60 focus-within:bg-white/[.13]">
           <textarea
             ref={inputRef}
             value={input}
@@ -507,7 +508,7 @@ export default function IntakeChat({
             onClick={() => void send(input)}
             disabled={busy || !input.trim()}
             aria-label={t.chat.send}
-            className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-ink-950 transition hover:shadow-[0_8px_24px_-8px_rgba(94,231,255,.9)] disabled:opacity-30"
+            className="grid size-9 shrink-0 place-items-center rounded-xl bg-white text-ink-950 transition hover:shadow-[0_8px_24px_-8px_rgba(108,242,200,.9)] disabled:opacity-30"
           >
             <ArrowUp className="size-4" strokeWidth={2.5} />
           </button>

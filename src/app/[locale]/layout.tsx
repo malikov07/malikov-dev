@@ -1,14 +1,27 @@
 import type { Metadata, Viewport } from "next";
-import { Instrument_Serif } from "next/font/google";
+import { Instrument_Serif, Manrope, Unbounded } from "next/font/google";
 import { notFound } from "next/navigation";
 import LocaleProvider from "@/components/i18n/LocaleProvider";
 import { getDictionary } from "@/lib/i18n";
 import { DEFAULT_LOCALE, isLocale, LOCALES, type Locale } from "@/lib/i18n/config";
 import "../globals.css";
 
-// Body text uses the Apple system stack (see --font-sans in globals.css), so
-// there is no sans webfont to load. Only the display serif is fetched, and it
-// is used purely for Latin italic accents.
+// Headlines: Unbounded — wide, round and heavy, set very large. Body: Manrope.
+// Both carry Cyrillic, which Russian needs; Uzbek is Latin. The italic serif
+// is only for the accent words, and is Latin-only, so Russian accents fall
+// back to the next serif in --font-display.
+const unbounded = Unbounded({
+  variable: "--font-unbounded",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
+const manrope = Manrope({
+  variable: "--font-manrope",
+  subsets: ["latin", "cyrillic"],
+  display: "swap",
+});
+
 const instrument = Instrument_Serif({
   variable: "--font-instrument",
   subsets: ["latin"],
@@ -71,7 +84,7 @@ export async function generateMetadata({
 }
 
 export const viewport: Viewport = {
-  themeColor: "#04050a",
+  themeColor: "#070b1d",
   colorScheme: "dark",
 };
 
@@ -87,10 +100,7 @@ export default async function LocaleLayout({
   return (
     <html
       lang={locale}
-      // Tells Next the smooth scrolling in globals.css is deliberate, so it
-      // suppresses it during route transitions instead of warning about it.
-      data-scroll-behavior="smooth"
-      className={`${instrument.variable} h-full antialiased`}
+      className={`${instrument.variable} ${unbounded.variable} ${manrope.variable} h-full antialiased`}
     >
       <body className="grain relative flex min-h-full flex-col bg-ink-950">
         <LocaleProvider locale={locale as Locale} dictionary={dictionary}>

@@ -5,18 +5,37 @@
    ========================================================================== */
 
 @theme {
-  /* Surface ramp — a very dark blue-violet rather than neutral black, so the
-     iridescent accents read as light passing through glass. */
-  --color-ink-950: #04050a;
-  --color-ink-900: #070912;
-  --color-ink-800: #0b0e1a;
-  --color-ink-700: #121628;
-  --color-ink-600: #1a2038;
+  /* Surface ramp — midnight blue rather than black, so the dark chapters feel
+     like a lit stage rather than empty space. */
+  --color-ink-950: #070b1d;
+  --color-ink-900: #0a1028;
+  --color-ink-800: #0f1633;
+  --color-ink-700: #161f42;
+  --color-ink-600: #1f2a52;
 
-  /* Prism accents — the three stops every gradient in the site samples. */
-  --color-prism-cyan: #5ee7ff;
-  --color-prism-violet: #a78bfa;
-  --color-prism-pink: #ff6bd6;
+  /* Prism accents — the three stops every gradient in the site samples:
+     mint, electric blue and coral, like light off holographic foil. */
+  --color-prism-a: #6cf2c8;
+  --color-prism-b: #5f8bff;
+  --color-prism-c: #ff8f7a;
+
+  /* Light chapters. A cool grey-blue paper rather than white (it sits next to
+     the midnight chapters without glaring), near-black ink, and one strong
+     signal blue. See `.paper-surface` for the grid and glows laid over it. */
+  --color-paper: #eceff5;
+  --color-paper-2: #e0e4ed;
+  --color-ink: #0b0c0f;
+  --color-ink-2: #34373d;
+  --color-ink-3: #6f727a;
+  --color-signal: #2a5cff;
+
+  /* Flat tile colours for the project scenes — one per tile, never mixed. */
+  --color-tile-blue: #2a5cff;
+  --color-tile-sky: #1d9bf0;
+  --color-tile-coral: #ff6a4d;
+  --color-tile-mint: #10b58a;
+  --color-tile-graphite: #17191e;
+  --color-tile-sun: #ffb52e;
 
   --color-haze-100: rgba(255, 255, 255, 0.92);
   --color-haze-200: rgba(255, 255, 255, 0.72);
@@ -31,13 +50,14 @@
      catch anyone who has them installed on another OS. Everything after
      that is the closest local grotesque per platform. */
   --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
+    var(--font-manrope), -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display",
     "Helvetica Neue", "Segoe UI Variable Text", "Segoe UI", Roboto,
     ui-sans-serif, system-ui, sans-serif;
   --font-mono:
     ui-monospace, "SF Mono", SFMono-Regular, Menlo, "Cascadia Mono",
     "Roboto Mono", monospace;
   --font-display: var(--font-instrument), "New York", Georgia, serif;
+  --font-heading: var(--font-unbounded), var(--font-manrope), system-ui, sans-serif;
 
   --animate-float: float 9s ease-in-out infinite;
   --animate-float-slow: float 15s ease-in-out infinite;
@@ -182,12 +202,10 @@
   display: inline-block;
   animation: word-rise 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   animation-delay: var(--enter-delay, 0s);
-  /* Gradient text (`.text-fade-word`, `.text-prism`) paints its background only
-     inside this element's border box. At leading-[0.95] that box is shorter than
-     the glyphs standing in it, so descenders fell outside the painted area and
-     rendered transparent — the headline looked sliced along the baseline. Grow
-     the paint area and take the same amount straight back out of layout, so the
-     line spacing is exactly what the leading asks for. */
+  /* At leading-[0.92] this box is shorter than the glyphs standing in it, and
+     anything painted per word (a background, a clip) would slice the
+     descenders. Grow the box and take the same amount straight back out of
+     layout, so the line spacing is exactly what the leading asks for. */
   padding-block: 0.25em;
   margin-block: -0.25em;
 }
@@ -206,9 +224,21 @@
   scrollbar-color: rgba(255, 255, 255, 0.16) transparent;
 }
 
+/* No CSS smooth scrolling: Lenis (see SmoothScroll) eases the wheel, and the
+   two fighting each other makes anchor jumps stutter. */
 html {
-  scroll-behavior: smooth;
   -webkit-tap-highlight-color: transparent;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
 }
 
 body {
@@ -221,7 +251,7 @@ body {
 }
 
 ::selection {
-  background: color-mix(in oklab, var(--color-prism-violet) 40%, transparent);
+  background: color-mix(in oklab, var(--color-prism-b) 40%, transparent);
   color: #fff;
 }
 
@@ -234,8 +264,8 @@ body {
 }
 ::-webkit-scrollbar-thumb {
   background: linear-gradient(
-    var(--color-prism-cyan),
-    var(--color-prism-violet)
+    var(--color-prism-a),
+    var(--color-prism-b)
   );
   border-radius: 99px;
   border: 3px solid var(--color-ink-950);
@@ -244,7 +274,7 @@ body {
 /* `[tabindex="-1"]` is excluded: those elements are focused programmatically
    (moving focus into a dialog), and a keyboard ring there is noise, not a cue. */
 :focus-visible:not([tabindex="-1"]) {
-  outline: 2px solid var(--color-prism-cyan);
+  outline: 2px solid var(--color-prism-a);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -277,9 +307,26 @@ body {
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.16;
+  opacity: 0.09;
   mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.82' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Light chapters: faint graph-paper lines and three soft glows in the tile
+   colours, so the paper has depth instead of reading as a blank page. Applied
+   to every light section through its `data-tone`, and to the hero's white
+   wash so the hand-over has no seam. */
+[data-tone="light"],
+.paper-surface {
+  background-color: var(--color-paper);
+  background-image:
+    radial-gradient(46rem 32rem at 8% 0%, rgba(42, 92, 255, 0.16), transparent 70%),
+    radial-gradient(40rem 30rem at 96% 45%, rgba(16, 181, 138, 0.13), transparent 70%),
+    radial-gradient(36rem 28rem at 40% 100%, rgba(255, 106, 77, 0.12), transparent 70%),
+    linear-gradient(rgba(11, 12, 15, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 12, 15, 0.045) 1px, transparent 1px);
+  background-size: auto, auto, auto, 72px 72px, 72px 72px;
+  background-position: 0 0, 0 0, 0 0, -1px -1px, -1px -1px;
 }
 
 /* ==========================================================================
@@ -291,6 +338,10 @@ body {
    3. a soft, wide, dark drop shadow so it floats above the background
    ========================================================================== */
 
+/* Only the standard `backdrop-filter` is written. With the `-webkit-` form
+   beside it, the CSS minifier collapsed the pair into the prefixed one alone —
+   which current Chrome ignores, so every glass surface lost its blur. The
+   build adds the Safari prefix itself. */
 .glass {
   position: relative;
   isolation: isolate;
@@ -301,7 +352,6 @@ body {
     rgba(255, 255, 255, 0.05) 100%
   );
   backdrop-filter: blur(22px) saturate(180%) brightness(1.08);
-  -webkit-backdrop-filter: blur(22px) saturate(180%) brightness(1.08);
   border: 1px solid var(--edge);
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.26),
@@ -315,32 +365,49 @@ body {
 .glass-strong {
   background: linear-gradient(
     150deg,
-    rgba(46, 56, 104, 0.78) 0%,
-    rgba(26, 32, 66, 0.80) 55%,
-    rgba(18, 22, 48, 0.84) 100%
+    rgba(32, 44, 92, 0.82) 0%,
+    rgba(19, 27, 62, 0.84) 55%,
+    rgba(12, 18, 44, 0.88) 100%
   );
   backdrop-filter: blur(40px) saturate(190%) brightness(1.12);
-  -webkit-backdrop-filter: blur(40px) saturate(190%) brightness(1.12);
   border: 1px solid var(--edge-bright);
   box-shadow:
     inset 0 1px 0 0 rgba(255, 255, 255, 0.30),
     0 40px 100px -30px rgba(0, 0, 0, 0.95);
 }
 
-/* Prism rim: a hairline gradient border that catches the accent colours.
-   Uses a masked pseudo-element so the fill stays independent of the border. */
+/* Prism rim: a hairline holographic border that wakes up on hover and turns
+   slowly around the card. A masked pseudo-element, so the fill stays
+   independent of the border. The angle is a registered custom property so the
+   conic gradient can animate it; the animation is paused until hover so idle
+   cards cost nothing to repaint. */
+@property --rim-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes rim-spin {
+  to {
+    --rim-angle: 360deg;
+  }
+}
+
 .glass-rim::before {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   padding: 1px;
-  background: linear-gradient(
-    140deg,
-    color-mix(in oklab, var(--color-prism-cyan) 70%, transparent),
-    transparent 30%,
-    transparent 68%,
-    color-mix(in oklab, var(--color-prism-pink) 60%, transparent)
+  background: conic-gradient(
+    from var(--rim-angle),
+    transparent 0deg,
+    var(--color-prism-a) 50deg,
+    var(--color-prism-b) 110deg,
+    transparent 170deg,
+    transparent 230deg,
+    var(--color-prism-c) 290deg,
+    transparent 350deg
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -352,6 +419,7 @@ body {
   mask-composite: exclude;
   opacity: 0;
   transition: opacity 0.5s var(--ease-glass);
+  animation: rim-spin 5s linear infinite paused;
   pointer-events: none;
   z-index: 2;
 }
@@ -359,6 +427,7 @@ body {
 .glass-rim:hover::before,
 .group:hover .glass-rim::before {
   opacity: 1;
+  animation-play-state: running;
 }
 
 /* Travelling specular sweep across a surface on hover. */
@@ -396,7 +465,7 @@ body {
   border-radius: inherit;
   background: radial-gradient(
     240px circle at var(--mx, 50%) var(--my, 50%),
-    rgba(167, 139, 250, 0.18),
+    rgba(95,139,255, 0.18),
     transparent 65%
   );
   opacity: 0;
@@ -413,62 +482,15 @@ body {
    Text
    ========================================================================== */
 
-.text-prism {
-  background: linear-gradient(
-    100deg,
-    var(--color-prism-cyan),
-    var(--color-prism-violet) 45%,
-    var(--color-prism-pink) 70%,
-    var(--color-prism-cyan)
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: var(--animate-pan);
-  padding-block: 0.25em;
-}
-
-/* All three gradient-text classes below paint a background and set the text
-   itself transparent. `background-clip: text` confines that paint to the
-   element's border box, and every headline here runs a leading tighter than the
-   glyphs are tall — so descenders fall outside the painted area and disappear,
-   which reads as text sliced flat along the baseline.
-
-   `padding-block` buys the paint area that missing room. On an inline box it is
-   free: vertical padding on an inline never affects the line box. Apply these
-   classes to inline elements for that reason (`.enter-word > span` is the one
-   inline-block user, and cancels the padding with a matching negative margin —
-   keep every value here at 0.25em so the two always agree). */
-.text-fade {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.62) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding-block: 0.25em;
-}
-
-/* Word-level fade, for headlines split by `EnterWords`.
-
-   `.text-fade` ramps across whatever box it is on. On a block heading that box
-   spans every line, so each line only travels a slice of the ramp. Per word the
-   full 100%→62% drop lands inside one word, which dims every descender and
-   reads as clipped glyphs. This is the same look measured per line of a
-   three-line block instead. */
-.text-fade-word {
-  background: linear-gradient(
-    180deg,
-    #ffffff 0%,
-    rgba(255, 255, 255, 0.84) 100%
-  );
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  padding-block: 0.25em;
+/* Every heading is set in the wide display face. Unbounded is already wide and
+   round, so headings track only slightly tight — the very negative tracking
+   the old grotesque wanted would make it collide. */
+h1,
+h2,
+h3,
+.font-heading {
+  font-family: var(--font-heading);
+  letter-spacing: -0.03em;
 }
 
 .display {
@@ -481,48 +503,21 @@ body {
    Utilities
    ========================================================================== */
 
-.marquee-track {
-  animation: marquee var(--marquee-duration, 38s) linear infinite;
-}
-.marquee:hover .marquee-track {
-  animation-play-state: paused;
-}
-
-/* Fades the edges of a scroller / marquee to nothing. */
-.edge-fade {
-  -webkit-mask-image: linear-gradient(
-    90deg,
-    transparent,
-    #000 8%,
-    #000 92%,
-    transparent
-  );
-  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+/* Endless horizontal band (see Ticker). The content is doubled in the markup,
+   so sliding by exactly half its width lands on an identical frame. */
+.ticker-track {
+  animation: marquee var(--ticker-duration, 40s) linear infinite;
 }
 
-/* On a touchscreen the auto-scrolling strip is the wrong interaction entirely:
-   nothing stays put long enough to read, a card hangs half-off each edge, and
-   "hover to pause" is not a gesture a thumb can make. Same markup, swiped by
-   hand instead — the overflow and snap utilities come from the JSX, and the
-   edge mask goes away so the first card reads as a card and not as clipped. */
-@media (max-width: 639px) {
-  .marquee-track {
-    animation: none;
-  }
-  .edge-fade {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
+/* Hollow display type: the alternate words on the ticker, and the step
+   numerals before they fill. */
+.text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.2px rgba(255, 255, 255, 0.55);
 }
-
-.noise-mask {
-  -webkit-mask-image: radial-gradient(70% 60% at 50% 40%, #000, transparent);
-  mask-image: radial-gradient(70% 60% at 50% 40%, #000, transparent);
-}
-
-/* Preserves 3D depth for tilt cards. */
-.pre3d {
-  transform-style: preserve-3d;
+.text-outline-ink {
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgba(11, 12, 15, 0.22);
 }
 
 .hide-scrollbar {
@@ -537,9 +532,6 @@ body {
    ========================================================================== */
 
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   *,
   *::before,
   *::after {

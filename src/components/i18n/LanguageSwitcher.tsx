@@ -9,8 +9,11 @@ import { useLocale } from "./LocaleProvider";
 
 export default function LanguageSwitcher({
   className = "",
+  tone = "dark",
 }: {
   className?: string;
+  /** Matches the chapter under the nav (the open menu stays dark glass). */
+  tone?: "dark" | "light";
 }) {
   const { locale, t } = useLocale();
   const router = useRouter();
@@ -55,9 +58,13 @@ export default function LanguageSwitcher({
         aria-label={t.nav.language}
         aria-expanded={open}
         aria-haspopup="listbox"
-        className="flex h-9 items-center gap-1.5 rounded-full border border-white/12 bg-white/[.06] px-3 text-[12.5px] font-medium text-haze-200 transition hover:border-white/30 hover:text-white"
+        className={`flex h-12 items-center gap-2 rounded-full border px-4 text-[14px] font-semibold transition ${
+          tone === "light"
+            ? "border-ink/12 bg-ink/[.04] text-ink-2 hover:border-ink/30 hover:text-ink"
+            : "border-white/12 bg-white/[.06] text-haze-200 hover:border-white/30 hover:text-white"
+        }`}
       >
-        <Globe className="size-3.5" />
+        <Globe className="size-4" />
         {LOCALE_META[locale].short}
       </button>
 
@@ -69,7 +76,7 @@ export default function LanguageSwitcher({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.97 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="glass-strong absolute right-0 top-11 z-50 w-44 overflow-hidden rounded-2xl p-1.5"
+            className="glass-strong absolute right-0 top-14 z-50 w-44 overflow-hidden rounded-2xl p-1.5"
           >
             {LOCALES.map((l) => {
               const active = l === locale;
@@ -91,7 +98,7 @@ export default function LanguageSwitcher({
                       {LOCALE_META[l].short}
                     </span>
                     <span className="flex-1">{LOCALE_META[l].label}</span>
-                    {active && <Check className="size-3.5 text-prism-cyan" />}
+                    {active && <Check className="size-3.5 text-prism-a" />}
                   </button>
                 </li>
               );

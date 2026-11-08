@@ -117,24 +117,66 @@ time a request arrives.
 |---|---|
 | Framework | Next.js 16 (App Router), React 19, TypeScript |
 | Styling | Tailwind CSS v4 |
-| Typography | The Apple system stack — real SF Pro on iOS/macOS, no webfont |
-| Animation | Motion (Framer Motion) |
-| Background | Hand-written WebGL/GLSL — no 3D library |
+| Typography | Unbounded (headlines) and Manrope (body), both with Cyrillic; Instrument Serif italic for accent words |
+| Animation | Motion (Framer Motion), Lenis for eased wheel scrolling |
+| 3D | three.js via React Three Fiber + drei, plus hand-written GLSL |
 | Database | Prisma 7 + Postgres, via the node-postgres driver adapter |
 | AI | Gemini / OpenAI / Anthropic, via a small provider layer |
 | i18n | Locale-routed, no library |
 
+### The page: light and dark chapters
+
+The homepage alternates like a product page. **Dark chapters** (`data-tone="dark"`)
+are transparent and show the fixed 3D layer behind the page; **light chapters**
+sit on opaque paper over it. While only light chapters are on screen the 3D
+layer stops drawing entirely, and the nav switches between ink-on-paper and
+white-on-dark to match whatever is under it.
+
+| Chapter | Tone | What it does on scroll |
+|---|---|---|
+| Hero | dark | Pinned for ~3 screens. The UI on a 3D phone and browser floats off the screens ("you describe it"), snaps back ("I build it"), and lights up with an order notification ("you see it working"); then the camera dives into the phone as the page washes to white. |
+| Manifesto | light | One statement, lit word by word as it is read. |
+| Services | light | Text scrolls on the left; a coloured tile stays pinned on the right and changes scene. |
+| Ticker | light | Crossing bands of the kinds of work. |
+| Showcase | light | Pinned horizontal gallery — scrolling down slides the project tiles sideways. |
+| Styles | dark | The ten design styles on a draggable 3D carousel. |
+| Process | light | Heading pinned; each step's numeral fills with ink as it arrives. |
+| FAQ | light | — |
+| Call to action, footer | dark | The finished phone and browser return above the last call to action. |
+
+Scroll-scrubbed values use `useScrub` (`src/components/ui/useScrub.ts`) rather
+than `useTransform(progress, input, output)`: Motion hands scroll-linked opacity
+and filter to the browser's scroll timeline when it can, and on that path it
+ignores the input range.
+
 ### The background
 
-`src/components/visuals/` renders a full-page shader: merged metaballs treated
-as liquid glass over a drifting aurora. The blobs are a 2D signed-distance
-field turned into a height map; the gradient of that height gives a surface
-normal, which is used to refract the background behind the glass, split it per
-colour channel, and light the surface. It reacts to the pointer and to scroll.
+`src/components/three/` is one fixed WebGL canvas behind the whole page:
 
-It degrades on its own — reduced-motion draws one static frame, a lost context
-or missing WebGL falls back to a CSS gradient, a background tab stops
-rendering, and the resolution drops if frames run long.
+- **an aurora** — a domain-warped noise shader (`aurora.ts`), drawn inside the
+  3D scene so the glass has something to refract;
+- **the devices** (`Device.tsx`) — a phone running a Telegram shop bot in front
+  of a browser showing a website. Each screen is a canvas texture with faint
+  dashed slots; the chat bubbles, product card, hero image, button and cards are
+  separate 3D tiles sitting in those slots, which is what lets them float off
+  and snap back. Two glass shapes float around them, sharing one render pass.
+  All shapes and colours, no words, so nothing in it needs translating;
+- **dust** — points at several depths that drift at different speeds as the
+  page scrolls.
+
+In the hero, the devices' position and size, how far apart the UI is, and the
+dive all come from the hero's scroll progress (`heroPlace`, `explodeAt`,
+`glowAt` and `diveAt` in `story.ts`,
+keyed to the same scroll windows as the scene text in `Hero.tsx` — change them
+together). Elsewhere it fits itself to any element marked `data-three-anchor`
+(`data-three-scale` grows or shrinks it), which is how it returns at the end.
+
+It degrades on its own: three.js loads after the page is interactive, with a
+static gradient in its place until the first frame is drawn. Phones and
+low-core machines get a lighter tier (fewer particles, smaller glass buffer),
+the resolution steps down if frames run long, reduced-motion draws still
+frames only (and turns off the eased scrolling), and a lost context or missing
+WebGL leaves the gradient.
 
 ### The database
 
@@ -156,23 +198,26 @@ Almost everything a non-developer would want to change lives in a few files:
 - **`src/lib/i18n/dictionaries/`** — all site copy, in all three languages.
 - **`src/lib/catalog.ts`** — the project categories and the ten design styles'
   preview colours. Add or remove a style here and it updates the chat, the
-  homepage strip and the admin panel at once.
+  homepage carousel and the admin panel at once.
 - **`src/lib/ai/prompt.ts`** — how the assistant behaves: its tone, the order it
   asks things in, and what it must never say.
 - **`src/components/request/ChatWidgets.tsx`** — the suggested budget bands.
 
 Landing page sections are separate components in `src/components/site/`.
 
-### Tuning the background
+### Tuning the look
 
-`src/components/visuals/shader.ts` holds the palette constants and the blob
-maths. In `LiquidBackground.tsx`, `GAIN` and `MAX` control how far the blob
-under the cursor stretches as it moves — raise `GAIN` for a more liquid,
-elastic feel, lower it for a stiffer one.
+Light chapters use the `paper` / `ink` / `signal` tokens in `globals.css`, and
+the project tiles use the `tile-*` colours (one flat colour per tile). Dark
+chapters use the three `--color-prism-*` tokens (mint, electric blue, coral);
+the 3D scene repeats those as constants in `story.ts` and `aurora.ts`, so change all three places together. The glass look is the
+`MeshTransmissionMaterial` props in `Device.tsx`; the quality tiers are in
+`detectTier()` in `story.ts`. The product scenes on the tiles are in
+`src/components/site/Scenes.tsx`.
 
 ### A note on the showcase
 
-The **What I build** section shows project *types* with abstract UI mocks, not
+The **What I build** gallery shows project *types* with abstract UI scenes, not
 screenshots of real client work — nothing on the site claims a client or a
 result that hasn't happened. Once you have real projects, replace the items in
 `src/components/site/Showcase.tsx` with them.

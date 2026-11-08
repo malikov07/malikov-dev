@@ -22,12 +22,9 @@ export default function EnterWords({
   /** Layout classes for the whole phrase (`block`, margins, …). */
   className?: string;
   /**
-   * Paint classes for each individual word. Gradient text belongs here, NOT in
-   * `className`: `.text-fade`/`.text-prism` work by painting a background and
-   * setting `color: transparent`, and a transformed descendant of such an
-   * element paints that background in its own coordinate space — so the words
-   * either pile up at one origin or vanish outright. Keeping the gradient on
-   * the same element that carries the transform is what makes it render.
+   * Paint classes for each individual word (colour, and anything painted with
+   * `background-clip: text`, which has to sit on the same element that carries
+   * the entrance transform or the words pile up at one origin).
    */
   wordClassName?: string;
   /** Seconds before the first word starts. */

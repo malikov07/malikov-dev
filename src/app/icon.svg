@@ -1,9 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
   <defs>
     <linearGradient id="prism" gradientUnits="userSpaceOnUse" x1="10" y1="9" x2="54" y2="55">
-      <stop offset="0%" stop-color="#5ee7ff"/>
-      <stop offset="50%" stop-color="#a78bfa"/>
-      <stop offset="100%" stop-color="#ff6bd6"/>
+      <stop offset="0%" stop-color="#6cf2c8"/>
+      <stop offset="50%" stop-color="#5f8bff"/>
+      <stop offset="100%" stop-color="#ff8f7a"/>
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="16" fill="url(#prism)"/>

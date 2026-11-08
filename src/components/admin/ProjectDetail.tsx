@@ -202,7 +202,7 @@ export default function ProjectDetail({ project }: { project: AdminProject }) {
                       ? "e.g. Agreed at $600, two weeks, includes admin panel."
                       : "e.g. Out of scope right now — suggested a simpler version instead."
                   }
-                  className="mt-2.5 w-full resize-y rounded-xl border border-white/10 bg-white/[.04] px-3.5 py-2.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-cyan/60"
+                  className="mt-2.5 w-full resize-y rounded-xl border border-white/10 bg-white/[.04] px-3.5 py-2.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-a/60"
                 />
                 <div className="mt-2.5 flex gap-2">
                   <button
@@ -350,7 +350,7 @@ export default function ProjectDetail({ project }: { project: AdminProject }) {
                 <ul className="space-y-1">
                   {project.features.map((f) => (
                     <li key={f} className="flex gap-2">
-                      <span className="mt-[7px] size-1 shrink-0 rounded-full bg-prism-cyan" />
+                      <span className="mt-[7px] size-1 shrink-0 rounded-full bg-prism-a" />
                       {f}
                     </li>
                   ))}
@@ -399,7 +399,7 @@ export default function ProjectDetail({ project }: { project: AdminProject }) {
                 href={href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-1 inline-flex items-center gap-1.5 text-[13.5px] text-prism-cyan transition hover:underline"
+                className="mt-1 inline-flex items-center gap-1.5 text-[13.5px] text-prism-a transition hover:underline"
               >
                 {project.contactValue}
                 <ExternalLink className="size-3" />
@@ -443,7 +443,7 @@ export default function ProjectDetail({ project }: { project: AdminProject }) {
             onChange={(e) => setNotes(e.target.value)}
             rows={3}
             placeholder="Anything you want to remember about this one…"
-            className="mt-2 w-full resize-y rounded-xl border border-white/10 bg-white/[.04] px-3.5 py-2.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-cyan/60"
+            className="mt-2 w-full resize-y rounded-xl border border-white/10 bg-white/[.04] px-3.5 py-2.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-a/60"
           />
           <button
             type="button"

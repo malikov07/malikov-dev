@@ -14,9 +14,9 @@ const ICONS: Record<ProjectKind, LucideIcon> = {
 };
 
 const GLOW: Record<ProjectKind, string> = {
-  website: "from-prism-cyan/25",
+  website: "from-prism-a/25",
   telegram_bot: "from-sky-400/25",
-  other: "from-prism-violet/25",
+  other: "from-prism-b/25",
   mobile_app: "from-white/10",
 };
 

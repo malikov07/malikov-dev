@@ -40,6 +40,34 @@ export const uz: Dictionary = {
     scrollDown: "Pastga aylantirish",
   },
 
+  /** The pinned hero's three scenes, shown while the 3D UI comes apart and back together. */
+  dive: {
+    hint: "Qanday ishlashini ko‘rish uchun pastga suring",
+    scenes: [
+      { label: "01 — G‘oya", text: "Siz aytib berasiz." },
+      { label: "02 — Yaratish", text: "Men yarataman." },
+      { label: "03 — Natija", text: "Siz ishlayotganini ko‘rasiz. Keyin to‘laysiz." },
+    ],
+  },
+
+  /** The statement that is read word by word as it scrolls into view. */
+  manifesto: {
+    eyebrow: "Nega bu ishlaydi",
+    text: "Biror narsa yaratish uchun dasturchi tilida gapirish shart emas. G‘oyangizni do‘stingizga tushuntirgandek aytib bering. Men uni rejaga, aniq narxga va ishlaydigan mahsulotga aylantiraman — siz esa faqat hammasi ishlayotganini ko‘rganingizdan keyin to‘laysiz.",
+  },
+
+  /** Words on the moving band under the hero. Short: each is set very large. */
+  ticker: [
+    "Saytlar",
+    "Telegram botlar",
+    "Internet do‘konlar",
+    "Mini Apps",
+    "Onlayn yozilish",
+    "Boshqaruv panellari",
+    "Avtomatlashtirish",
+    "Integratsiyalar",
+  ],
+
   services: {
     eyebrow: "Nima bilan shug‘ullanaman",
     title: "Uch yo‘nalish,",
@@ -127,7 +155,7 @@ export const uz: Dictionary = {
     title: "Ko‘rinishini tanlang.",
     accent: "Dizayn atamalarini bilish shart emas.",
     lead: "Chatda ularni haqiqiy namuna sifatida ko‘rasiz va yoqqanini ko‘rsatasiz. Ishonchingiz komil emasmi? Shunday deng — biznesingizga mosini o‘zim tanlayman.",
-    note: "To‘xtatish uchun ustiga olib boring · Boshlash uchun uslubni bosing",
+    note: "Aylantirish uchun torting · Boshlash uchun uslubni bosing",
     noteTouch: "Ko‘rish uchun suring · Boshlash uchun uslubni bosing",
     requestAria: "{label} uslubida buyurtma berish",
   },

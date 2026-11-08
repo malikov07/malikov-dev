@@ -36,9 +36,9 @@ export function LogoMark({ className, ...props }: SVGProps<SVGSVGElement>) {
           x2="20"
           y2="21"
         >
-          <stop offset="0" stopColor="var(--color-prism-cyan)" />
-          <stop offset="0.5" stopColor="var(--color-prism-violet)" />
-          <stop offset="1" stopColor="var(--color-prism-pink)" />
+          <stop offset="0" stopColor="var(--color-prism-a)" />
+          <stop offset="0.5" stopColor="var(--color-prism-b)" />
+          <stop offset="1" stopColor="var(--color-prism-c)" />
         </linearGradient>
       </defs>
 
@@ -62,20 +62,31 @@ export function LogoMark({ className, ...props }: SVGProps<SVGSVGElement>) {
  * Mark plus wordmark. `spin` drives the conic ring's orbit animation — on in
  * the nav, off in the footer, where nothing else on the page is moving.
  */
-export default function Logo({ spin = false }: { spin?: boolean }) {
+export default function Logo({
+  spin = false,
+  tone = "dark",
+}: {
+  spin?: boolean;
+  /** Colour of the wordmark: white on dark chapters, ink on light ones. */
+  tone?: "dark" | "light";
+}) {
   return (
     <span className="flex items-center gap-2.5">
-      <span className="relative grid size-8 place-items-center">
+      <span className="relative grid size-10 place-items-center">
         <span
-          className={`absolute inset-0 rounded-[10px] bg-[conic-gradient(from_0deg,var(--color-prism-cyan),var(--color-prism-violet),var(--color-prism-pink),var(--color-prism-cyan))] ${
+          className={`absolute inset-0 rounded-[12px] bg-[conic-gradient(from_0deg,var(--color-prism-a),var(--color-prism-b),var(--color-prism-c),var(--color-prism-a))] ${
             spin ? "animate-orbit opacity-90" : ""
           }`}
         />
-        <span className="absolute inset-[1.5px] rounded-[8.5px] bg-ink-950" />
-        <LogoMark className="relative size-5" />
+        <span className="absolute inset-[1.5px] rounded-[10.5px] bg-ink-950" />
+        <LogoMark className="relative size-6" />
       </span>
-      <span className="text-[15px] font-medium tracking-tight text-white">
-        it-network<span className="text-haze-400">.uz</span>
+      <span
+        className={`font-heading text-[17px] font-semibold tracking-[-0.03em] transition-colors duration-500 ${
+          tone === "light" ? "text-ink" : "text-white"
+        }`}
+      >
+        it-network<span className={tone === "light" ? "text-ink-3" : "text-haze-400"}>.uz</span>
       </span>
     </span>
   );

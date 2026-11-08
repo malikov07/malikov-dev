@@ -18,7 +18,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative mt-8 border-t border-white/8">
+    <footer data-tone="dark" className="relative border-t border-white/8">
       <div className="mx-auto w-full max-w-6xl px-5 py-14">
         <div className="flex flex-col gap-10 sm:flex-row sm:justify-between">
           <div className="max-w-xs">

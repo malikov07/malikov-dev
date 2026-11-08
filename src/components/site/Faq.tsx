@@ -19,26 +19,26 @@ function Item({
   onToggle: () => void;
 }) {
   return (
-    <div
-      className={`glass overflow-hidden rounded-2xl transition-colors duration-500 ${
-        open ? "border-white/22" : "hover:border-white/18"
-      }`}
-    >
+    <div className="border-b border-ink/10">
       <button
         type="button"
         onClick={onToggle}
         aria-expanded={open}
-        className="flex w-full items-center gap-4 px-5 py-4 text-left sm:px-6 sm:py-5"
+        className="group flex w-full items-center gap-6 py-6 text-left sm:py-7"
       >
-        <span className="flex-1 text-[15px] font-medium tracking-tight text-white sm:text-base">
+        <span className="flex-1 text-[18px] font-semibold tracking-[-0.02em] text-ink sm:text-[22px]">
           {q}
         </span>
         <motion.span
           animate={{ rotate: open ? 45 : 0 }}
           transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-          className="grid size-7 shrink-0 place-items-center rounded-full border border-white/12 bg-white/[.05] text-haze-200"
+          className={`grid size-10 shrink-0 place-items-center rounded-full border transition-colors duration-300 ${
+            open
+              ? "border-ink bg-ink text-white"
+              : "border-ink/15 text-ink group-hover:border-ink"
+          }`}
         >
-          <Plus className="size-3.5" />
+          <Plus className="size-4" />
         </motion.span>
       </button>
 
@@ -51,9 +51,7 @@ function Item({
             transition={{ duration: 0.38, ease: [0.16, 1, 0.3, 1] }}
             className="overflow-hidden"
           >
-            <p className="px-5 pb-5 text-[14px] leading-relaxed text-haze-300 sm:px-6 sm:pb-6">
-              {a}
-            </p>
+            <p className="max-w-2xl pb-7 pr-16 text-[16px] leading-relaxed text-ink-2">{a}</p>
           </motion.div>
         )}
       </AnimatePresence>
@@ -72,7 +70,7 @@ export default function Faq() {
       title={t.faq.title}
       accent={t.faq.accent}
     >
-      <div className="mx-auto max-w-3xl space-y-2.5">
+      <div className="border-t border-ink/10">
         {t.faq.items.map((f, i) => (
           <Reveal key={f.q} delay={i * 0.05}>
             <Item

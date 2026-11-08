@@ -99,7 +99,7 @@ export default function AdminDashboard({
       <header className="sticky top-0 z-30 border-b border-white/8 bg-ink-950/70 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-[1500px] items-center gap-3 px-4 py-3">
           <span className="relative grid size-8 shrink-0 place-items-center">
-            <span className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_0deg,var(--color-prism-cyan),var(--color-prism-violet),var(--color-prism-pink),var(--color-prism-cyan))]" />
+            <span className="absolute inset-0 rounded-[10px] bg-[conic-gradient(from_0deg,var(--color-prism-a),var(--color-prism-b),var(--color-prism-c),var(--color-prism-a))]" />
             <span className="absolute inset-[1.5px] rounded-[8.5px] bg-ink-950" />
             <span className="relative text-[13px] font-semibold text-white">M</span>
           </span>
@@ -145,7 +145,7 @@ export default function AdminDashboard({
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search name, ref, or text…"
-              className="w-full rounded-xl border border-white/10 bg-white/[.04] py-2.5 pl-10 pr-3.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-cyan/60"
+              className="w-full rounded-xl border border-white/10 bg-white/[.04] py-2.5 pl-10 pr-3.5 text-[13.5px] text-white outline-none transition placeholder:text-haze-400 focus:border-prism-a/60"
             />
           </div>
 
@@ -201,7 +201,7 @@ export default function AdminDashboard({
                   transition={{ duration: 0.35, delay: Math.min(i * 0.03, 0.3) }}
                   className={`glass w-full rounded-2xl p-3.5 text-left transition-all duration-300 ${
                     on
-                      ? "border-prism-cyan/50 shadow-[0_0_0_1px_rgba(94,231,255,.35)]"
+                      ? "border-prism-a/50 shadow-[0_0_0_1px_rgba(108,242,200,.35)]"
                       : "hover:border-white/25"
                   }`}
                 >

@@ -118,6 +118,8 @@ export default function RequestProvider({ children }: { children: ReactNode }) {
         {isOpen && (
           <motion.div
             className="fixed inset-x-0 z-[100] overflow-y-auto"
+            // Its own scroller: the page-level smooth scroll must not take its wheel.
+            data-lenis-prevent
             // Falls back to the layout viewport before the effect above runs,
             // and on browsers without visualViewport — both correct while no
             // keyboard is open, which is the only time the two differ.
@@ -158,7 +160,7 @@ export default function RequestProvider({ children }: { children: ReactNode }) {
                 transition={{ duration: 0.42, ease: [0.16, 1, 0.3, 1] }}
               >
                 {/* Prism hairline along the top edge of the panel. */}
-                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-prism-cyan/70 to-transparent" />
+                <div className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-prism-a/70 to-transparent" />
 
                 <button
                   type="button"

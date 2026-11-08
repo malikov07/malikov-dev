@@ -13,12 +13,12 @@ import StylePreview from "./StylePreview";
 const FIELD =
   "w-full rounded-xl border border-white/10 bg-white/[.04] px-3.5 py-2.5 text-sm " +
   "text-white outline-none transition placeholder:text-haze-400 " +
-  "focus:border-prism-cyan/60 focus:bg-white/[.07]";
+  "focus:border-prism-a/60 focus:bg-white/[.07]";
 
 const CHIP =
   "rounded-full border px-3 py-1.5 text-xs transition select-none";
 const CHIP_OFF = "border-white/10 bg-white/[.04] text-haze-300 hover:border-white/25 hover:text-white";
-const CHIP_ON = "border-prism-cyan/60 bg-prism-cyan/15 text-white";
+const CHIP_ON = "border-prism-a/60 bg-prism-a/15 text-white";
 
 const METHOD_ICONS: Record<ContactMethod, typeof Send> = {
   telegram: Send,
@@ -178,7 +178,7 @@ export function ContactForm({
         type="button"
         onClick={submit}
         disabled={disabled}
-        className="w-full rounded-xl bg-white py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(94,231,255,.8)] disabled:opacity-50"
+        className="w-full rounded-xl bg-white py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(108,242,200,.8)] disabled:opacity-50"
       >
         {t.contact.continue}
       </button>
@@ -400,7 +400,7 @@ export function SummaryCard({
               <ul className="space-y-0.5">
                 {brief.features.slice(0, 8).map((f) => (
                   <li key={f} className="flex gap-1.5">
-                    <span className="mt-[7px] size-1 shrink-0 rounded-full bg-prism-cyan" />
+                    <span className="mt-[7px] size-1 shrink-0 rounded-full bg-prism-a" />
                     {f}
                   </li>
                 ))}
@@ -455,7 +455,7 @@ export function SummaryCard({
           type="button"
           onClick={onConfirm}
           disabled={busy}
-          className="flex-[1.4] rounded-xl bg-white py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(94,231,255,.8)] disabled:opacity-50"
+          className="flex-[1.4] rounded-xl bg-white py-2.5 text-sm font-medium text-ink-950 transition hover:shadow-[0_10px_30px_-10px_rgba(108,242,200,.8)] disabled:opacity-50"
         >
           {busy ? t.summary.sending : t.summary.confirm}
         </button>

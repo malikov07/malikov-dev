@@ -40,6 +40,34 @@ export const en = {
     scrollDown: "Scroll down",
   },
 
+  /** The pinned hero's three scenes, shown while the 3D UI comes apart and back together. */
+  dive: {
+    hint: "Scroll to see how it works",
+    scenes: [
+      { label: "01 — The idea", text: "You describe it." },
+      { label: "02 — The build", text: "I build it." },
+      { label: "03 — The result", text: "You see it working. Then you pay." },
+    ],
+  },
+
+  /** The statement that is read word by word as it scrolls into view. */
+  manifesto: {
+    eyebrow: "Why it works",
+    text: "You shouldn't need to speak developer to get something built. Explain your idea the way you'd tell a friend. I turn it into a plan, a fixed price and a working product — and you pay only once you've seen it run.",
+  },
+
+  /** Words on the moving band under the hero. Short: each is set very large. */
+  ticker: [
+    "Websites",
+    "Telegram bots",
+    "Online stores",
+    "Mini Apps",
+    "Booking systems",
+    "Dashboards",
+    "Automation",
+    "Integrations",
+  ],
+
   services: {
     eyebrow: "What I do",
     title: "Three kinds of work,",
@@ -127,7 +155,7 @@ export const en = {
     title: "Pick the look.",
     accent: "No design vocabulary required.",
     lead: "During the chat you'll see these as real previews and just point at the one you like. Not sure? Say so, and I'll choose what suits your business.",
-    note: "Hover to pause · Click any style to start a request with it",
+    note: "Drag to spin · Click any style to start a request with it",
     noteTouch: "Swipe to browse · Tap any style to start a request with it",
     requestAria: "Request a project in the {label} style",
   },

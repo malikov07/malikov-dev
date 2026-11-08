@@ -44,7 +44,7 @@ export default function DesignGallery({
               }}
               className={`group relative overflow-hidden rounded-xl border text-left transition-all duration-300 disabled:cursor-not-allowed ${
                 active
-                  ? "border-prism-cyan/70 shadow-[0_0_0_1px_var(--color-prism-cyan),0_10px_30px_-12px_rgba(94,231,255,.6)]"
+                  ? "border-prism-a/70 shadow-[0_0_0_1px_var(--color-prism-a),0_10px_30px_-12px_rgba(108,242,200,.6)]"
                   : "border-white/10 hover:-translate-y-0.5 hover:border-white/30"
               }`}
             >
@@ -54,7 +54,7 @@ export default function DesignGallery({
                 <motion.span
                   initial={{ scale: 0.6, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  className="absolute right-1.5 top-1.5 grid size-5 place-items-center rounded-full bg-prism-cyan text-ink-950 shadow-lg"
+                  className="absolute right-1.5 top-1.5 grid size-5 place-items-center rounded-full bg-prism-a text-ink-950 shadow-lg"
                 >
                   <Check className="size-3" strokeWidth={3} />
                 </motion.span>
